@@ -69,7 +69,18 @@ void loop() {
       else if (motor == 7){
         motL.writeMicroseconds(m);
       } 
-      else if 
+      else if (motor == 13){
+        motFR.writeMicroseconds(m);
+        motFL.writeMicroseconds(m);
+        motBR.writeMicroseconds(m);
+        motBL.writeMicroseconds(m);
+      }
+      else if (motor == 14){
+        motFR.writeMicroseconds(m);
+        motFL.writeMicroseconds(m);
+        motBR.writeMicroseconds(m);
+        motBL.writeMicroseconds(m);
+      }
     }
   }
 }
