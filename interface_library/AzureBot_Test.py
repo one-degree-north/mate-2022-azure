@@ -17,7 +17,7 @@ class Comms:
         value = round(value*1.27)
         if value<0:
             value = 255+value
-        return value 
+        return value
 
     def run(self):
         while True: 
@@ -33,8 +33,8 @@ class Comms:
 
         while True:
             #coordinate => [x,y]
-            if leftJoy_UD[1] > 0 
-                #joystick has been moved up; tell both thrusters to move forward 
+            if leftJoy_UD[1] > 0
+                #joystick has been moved up; tell both thrusters to move forward
                 value = self.send_value(leftJoy_UD)
                 packet_rightThruster = chr(1) + chr(6) + chr((self.value).encode("latin")) + chr(255)
                 self.ser.write(packet_rightThruster)
