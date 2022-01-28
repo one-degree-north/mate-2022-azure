@@ -2,10 +2,14 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QTabWidget, QTab
 from PyQt5.QtMultimedia import QCameraInfo, QCamera
 from PyQt5.QtMultimediaWidgets import QCameraViewfinder
 from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QTextCursor
 
 import sys
 import yaml
 import logging
+from time import sleep
+from threading import Thread
+import asyncio
 
 class AzureUI(QMainWindow):
     def __init__(self):
@@ -49,7 +53,7 @@ class CameraTab(QWidget):
         super().__init__()
 
         self.layout = QGridLayout()
-        self.layout.setSpacing(0)
+        # self.layout.setSpacing(0)
 
         self.cam1 = Camera(settings_yml['camera-ports']['cam-1'])
         self.cam2 = Camera(settings_yml['camera-ports']['cam-2'])
@@ -80,21 +84,32 @@ class LoggerBox(logging.Handler):
     def emit(self, record):
         self.msg = self.format(record)
         self.logger.appendPlainText(self.msg)
+        # QApplication.processEvents()
+        # self.logger.moveCursor(QTextCursor.End)
+        # self.messages_text_box.moveCursor(QtGui.QTextCursor.End)
 
-class LogsTab(QWidget):
+# class Logger(QDialog, QPlainTextEdit):
+
+
+class LogsTab(QDialog, QPlainTextEdit):
     def __init__(self):
         super().__init__()
 
         self.logger = LoggerBox(self)
+        self.logger.setFormatter(logging.Formatter('[%(asctime)s] %(message)s', '%H:%M:%S'))
+
         logging.getLogger().addHandler(self.logger)
         logging.getLogger().setLevel(logging.DEBUG)
+        
 
         self.layout = QGridLayout()
         self.layout.addWidget(self.logger.logger)
 
         self.setLayout(self.layout)
 
-        self.update_log('testinfijgwsojdasfpoisjsdafoisjdjsfsais')
+        # for _ in range(40):
+        #     sleep(0.7)
+        #     self.update_log('testinfijgwsojdasfpoisjsdafoisjdjsfsais')
     
     def update_log(self, msg):
         logging.debug(msg)
@@ -104,6 +119,21 @@ class SettingsTab(QWidget):
         super().__init__()
 
 
+# async def testing_func(x):
+#     for _ in range(100):
+#         x.tabs.logs_tab.update_log('a')
+#         await asyncio.sleep(0.5)
+
+class TestingLog(Thread):
+    def __init__(self, window_name):
+        Thread.__init__(self)
+        self.daemon = True
+        self.start()
+
+    def run(self):
+        for _ in range(1000000):
+            sleep(0.01)
+            window.tabs.logs_tab.update_log('ok')
 
 if __name__ == '__main__':
     # Defining global variables
@@ -119,4 +149,21 @@ if __name__ == '__main__':
     window = AzureUI()
     window.show()
 
+    TestingLog(window)
+
+    # t1 = Thread(target=testing_func(window))
+    # t1.start()
+
     sys.exit(app.exec())
+
+# t = Thread(target=threaded_func(window))
+# t.start()
+
+    
+
+
+# cameras = QCameraInfo.availableCameras()
+
+# with open('gui/settings.yml', 'r') as f:
+#     settings_yml = yaml.safe_load(f)
+# print(settings_yml)
