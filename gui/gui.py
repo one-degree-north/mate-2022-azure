@@ -80,6 +80,7 @@ class LoggerBox(logging.Handler):
         super().__init__()
         self.logger = QPlainTextEdit()
         self.logger.setReadOnly(True)
+
     
     def emit(self, record):
         self.msg = self.format(record)
@@ -107,6 +108,9 @@ class LogsTab(QDialog, QPlainTextEdit):
 
         self.setLayout(self.layout)
 
+        for _ in range(20):
+            self.update_log('ok')
+
         # for _ in range(40):
         #     sleep(0.7)
         #     self.update_log('testinfijgwsojdasfpoisjsdafoisjdjsfsais')
@@ -124,6 +128,7 @@ class SettingsTab(QWidget):
 #         x.tabs.logs_tab.update_log('a')
 #         await asyncio.sleep(0.5)
 
+"""
 class TestingLog(Thread):
     def __init__(self, window_name):
         Thread.__init__(self)
@@ -134,6 +139,7 @@ class TestingLog(Thread):
         for _ in range(1000000):
             sleep(0.01)
             window.tabs.logs_tab.update_log('ok')
+"""
 
 if __name__ == '__main__':
     # Defining global variables
@@ -149,7 +155,7 @@ if __name__ == '__main__':
     window = AzureUI()
     window.show()
 
-    TestingLog(window)
+    # TestingLog(window)
 
     # t1 = Thread(target=testing_func(window))
     # t1.start()
