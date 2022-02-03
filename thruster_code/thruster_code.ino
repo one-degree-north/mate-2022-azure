@@ -65,26 +65,28 @@ void loop() {
       } 
       else if (motor == 7){
         motL.writeMicroseconds(m);
-      } 
+      }
       else if (motor == 11){
-        motFR.writeMicroseconds(m);
-        motFL.writeMicroseconds(m);
-        motBR.writeMicroseconds(m);
-        motBL.writeMicroseconds(m);
-        motR.writeMicroseconds(m);
-        motL.writeMicroseconds(m);
+        motFR.writeMicroseconds(1500);
+        motFL.writeMicroseconds(1500);
+        motBR.writeMicroseconds(1500);
+        motBL.writeMicroseconds(1500);
+        motR.writeMicroseconds(1500);
+        motL.writeMicroseconds(1500);
       }
       else if (motor == 13){
-        motFR.writeMicroseconds(m);
-        motFL.writeMicroseconds(m);
-        motBR.writeMicroseconds(m);
-        motBL.writeMicroseconds(m);
-      }
-      else if (motor == 14){
-        motFR.writeMicroseconds(m);
-        motFL.writeMicroseconds(m);
-        motBR.writeMicroseconds(m);
-        motBL.writeMicroseconds(m);
+        if (m == 127){
+          motFR.writeMicroseconds(2000);
+          motFL.writeMicroseconds(2000);
+          motBR.writeMicroseconds(2000);
+          motBL.writeMicroseconds(2000);
+        }
+        else if (m == 254){
+          motFR.writeMicroseconds(1000);
+          motFL.writeMicroseconds(1000);
+          motBR.writeMicroseconds(1000);
+          motBL.writeMicroseconds(1000);
+        }
       }
     }
   }
