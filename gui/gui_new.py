@@ -1,15 +1,15 @@
-from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QTabWidget, QGridLayout, QHBoxLayout, QLabel, QPushButton, QPlainTextEdit, QDialog, QTabBar
+from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QTabWidget, QGridLayout, QHBoxLayout, \
+QLabel, QPushButton, QPlainTextEdit, QDialog, QTabBar, QStylePainter, QStyleOptionTab, QStyle
+
 from PyQt5.QtMultimedia import QCameraInfo, QCamera
 from PyQt5.QtMultimediaWidgets import QCameraViewfinder
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QTextCursor
 
+
 import sys
 import yaml
 import logging
-from time import sleep
-from threading import Thread
-import asyncio
 
 class AzureUI(QMainWindow):
     def __init__(self):
@@ -18,23 +18,38 @@ class AzureUI(QMainWindow):
         self.setWindowTitle('Azure UI')
 
         self.resize(800,446)
+        # self.setStyle(QStyle.macin 'windows')
         # self.setMinimumSize(800,446)
 
         self.tabs = Tabs()
-        # self.tabs.setStyleSheet('background: green; border-radius: 12px')
+        self.tabs.hide()
 
-        self.test = QWidget()
-        self.setCentralWidget(self.test)
+        self.setCentralWidget(self.tabs)
 
-        self.layout = QHBoxLayout()
-        self.layout.addWidget(self.tabs)
 
-        self.test.setLayout(self.layout)
+####
+class Horizontal_Tab(QTabBar):
+    def paintEvent(self, event):
+        self.painter = QStylePainter()
+        self.option = QStyleOptionTab()
 
+        for i in range(self.count()):
+            self.initStyleOption(self.option, self.count)
+            self.painter.drawControl(QStyle.CE_TabBarTabShape, self.option)
+            self.painter.drawText(self.tabRect(i), Qt.AlignCenter, Qt.TextDontClip, self.tabText(i))
+
+    def tabSizeHint(self, i):
+        self.size = QTabBar.tabSizeHint(i)
+        if self.size.width() > self.size.height():
+            self.size.transpose()
+        return size
 
 class Tabs(QTabWidget):
     def __init__(self):
         super().__init__()
+        # QTabWidget.__init__(self, parent=None)
+
+        # self.setTabBar(self, Horizontal_Tab)
 
         self.camera_tab = CameraTab()
         self.logs_tab = LogsTab()
@@ -48,13 +63,16 @@ class Tabs(QTabWidget):
         self.addTab(self.logs_tab, 'Logs')
         self.addTab(self.settings_tab, 'Settings')
 
-        self.setDocumentMode(True)
+        # self.setDocumentMode(True)
 
         self.setTabPosition(QTabWidget.West if settings_yml['vertical-tabs'] else QTabWidget.North)
+
+        self.setCurrentIndex(2)
 
 class CameraTab(QWidget):
     def __init__(self):
         super().__init__()
+        
 
         self.layout = QGridLayout()
         # self.layout.setSpacing(0)
@@ -155,6 +173,7 @@ if __name__ == '__main__':
 
     # Create UI application
     app = QApplication([])
+    app.setStyle('breeze')
 
     window = AzureUI()
     window.show()
