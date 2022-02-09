@@ -20,9 +20,8 @@ class AzureUI(QMainWindow):
 
         self.frame.layout = QHBoxLayout()
 
-        self.menu = Menu()
+        self.menu = Menu(self)
         self.tabs = Tabs()
-        self.tab_widget = self.tabs
 
         # self.menu.setStyleSheet('background: rgb(17, 28, 43); border-top-right-radius: 20px; border-bottom-right-radius: 20px')
         # self.menu.setFixedWidth(300)
@@ -38,7 +37,7 @@ class AzureUI(QMainWindow):
         self.setCentralWidget(self.frame)
         
 class Menu(QWidget):
-    def __init__(self):
+    def __init__(self, parent):
         super().__init__()
         self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
         
@@ -50,46 +49,50 @@ class Menu(QWidget):
         self.menu_button = TabButton('Menu')
         self.menu_button.clicked.connect(self.menu_callback)
         
-        self.image = QLabel(self)
-        self.image_pixmap = QPixmap('gui/rsz_1mate_logo.png')
-        # self.image_pixmap.scaled(0.3, 0.3, Qt.KeepAspectRatio)
+        self.image = QLabel()
+        self.image_pixmap = QPixmap('gui/mate_logo_2_3_40.png')
+        self.image_pixmap.scaled(0.3, 0.3, Qt.KeepAspectRatio)
+        # self.image_pixmap.setAlignment(Qt.AlignHCenter)
+
+        self.image.setFixedSize(250, 280)
 
         self.image.setPixmap(self.image_pixmap)
         self.image.setAlignment(Qt.AlignHCenter)
+        self.image.setStyleSheet('background: rgb(250, 250, 250); margin: 20px; padding: 10px; border-radius: 10px')
 
         self.cam_grid_button = TabButton('Camera Grid')
-        self.cam_grid_button.clicked.connect(self.cam_grid_callback)
+        self.cam_grid_button.clicked.connect(lambda: parent.tabs.setCurrentIndex(0))
 
         self.cam_1_button = TabButton('Camera 1')
-        self.cam_1_button.clicked.connect(self.cam_1_callback)
+        self.cam_1_button.clicked.connect(lambda: parent.tabs.setCurrentIndex(1))
 
         self.cam_2_button = TabButton('Camera 2')
-        self.cam_2_button.clicked.connect(self.cam_2_callback)
+        self.cam_2_button.clicked.connect(lambda: parent.tabs.setCurrentIndex(2))
 
         self.cam_3_button = TabButton('Camera 3')
-        self.cam_3_button.clicked.connect(self.cam_3_callback)
+        self.cam_3_button.clicked.connect(lambda: parent.tabs.setCurrentIndex(3))
 
         self.cam_4_button = TabButton('Camera 4')
-        self.cam_4_button.clicked.connect(self.cam_4_callback)
+        self.cam_4_button.clicked.connect(lambda: parent.tabs.setCurrentIndex(4))
 
         self.log_button = TabButton('Logs')
-        self.log_button.clicked.connect(self.log_callback)
+        self.log_button.clicked.connect(lambda: parent.tabs.setCurrentIndex(5))
 
-        self.tabs = QWidget()
-        self.tabs.layout = QVBoxLayout()
+        self.tabs_widget = QWidget()
+        self.tabs_widget.layout = QVBoxLayout()
 
-        self.tabs.layout.addWidget(self.menu_button)
-        self.tabs.layout.addWidget(self.cam_grid_button)
-        self.tabs.layout.addWidget(self.cam_1_button)
-        self.tabs.layout.addWidget(self.cam_2_button)
-        self.tabs.layout.addWidget(self.cam_3_button)
-        self.tabs.layout.addWidget(self.cam_4_button)
-        self.tabs.layout.addWidget(self.log_button)
+        self.tabs_widget.layout.addWidget(self.menu_button)
+        self.tabs_widget.layout.addWidget(self.cam_grid_button)
+        self.tabs_widget.layout.addWidget(self.cam_1_button)
+        self.tabs_widget.layout.addWidget(self.cam_2_button)
+        self.tabs_widget.layout.addWidget(self.cam_3_button)
+        self.tabs_widget.layout.addWidget(self.cam_4_button)
+        self.tabs_widget.layout.addWidget(self.log_button)
 
-        self.tabs.setLayout(self.tabs.layout)
+        self.tabs_widget.setLayout(self.tabs_widget.layout)
 
         self.layout.addWidget(self.image)
-        self.layout.addWidget(self.tabs)#, Qt.AnchorVerticalCenter)
+        self.layout.addWidget(self.tabs_widget, Qt.AlignHCenter)
 
         self.setLayout(self.layout)
 
@@ -97,28 +100,28 @@ class Menu(QWidget):
         print('hello')
         pass
 
-    def cam_grid_callback(self):
-        pass
+    # def cam_grid_callback(self):
+    #     self.ui.tabs.setCurrentIndex(0)
 
-    def cam_1_callback(self):
-        self.tabs.setCurrentIndex(1)
+    # # def cam_1_callback(self):
+    # #     self.ui.tabs.setCurrentIndex(1)
 
-    def cam_2_callback(self):
-        pass
+    # def cam_2_callback(self):
+    #     self.ui.tabs.setCurrentIndex(2)
 
-    def cam_3_callback(self):
-        pass
+    # def cam_3_callback(self):
+    #     self.ui.tabs.setCurrentIndex(3)
 
-    def cam_4_callback(self):
-        pass
+    # def cam_4_callback(self):
+    #     self.ui.tabs.setCurrentIndex(4)
 
-    def log_callback(self):
-        pass
+    # def log_callback(self):
+    #     pass
 
-    def reset_color(self): # maybe not
-        pass
+    # def reset_color(self): # maybe not
+    #     pass
 
-        # self.setCentralWidget(self.menu)
+    #     # self.setCentralWidget(self.menu)
 
 class Tabs(QTabWidget):
     def __init__(self):
