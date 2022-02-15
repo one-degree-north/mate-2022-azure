@@ -156,6 +156,8 @@ class Tabs(QWidget):
 
         self.setLayout(self.layout)
 
+
+
 class MenuWindow(QWidget):
     def __init__(self):
         super().__init__()

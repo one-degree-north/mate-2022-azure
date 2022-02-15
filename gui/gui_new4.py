@@ -16,8 +16,6 @@ class AzureUI(QMainWindow):
         self.setStyleSheet('background: rgb(24, 40, 61)')#; margin: 6px')
 
         self.frame = QWidget()
-
-
         self.frame.layout = QHBoxLayout()
 
         self.menu = Menu(self)
@@ -38,7 +36,7 @@ class AzureUI(QMainWindow):
 
     def keyPressEvent(self, e):
         if e.key() == Qt.Key_H:
-            if self.menu.isVisible():
+            if not self.menu.isVisible():
                 self.menu.show()
             else:
                 self.menu.hide()
@@ -49,8 +47,16 @@ class Menu(QWidget):
         super().__init__()
         self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
         
-        self.setStyleSheet('background: rgb(17, 28, 43); border-top-right-radius: 20px; border-bottom-right-radius: 20px')
+        self.setStyleSheet("""
+            QWidget {
+                background: rgb(17, 28, 43);
+                border-top-right-radius: 20px;
+                border-bottom-right-radius: 20px;
+            }
+        """)
         self.setFixedWidth(300)
+
+        # background: rgb(17, 28, 43); border-top-right-radius: 20px; border-bottom-right-radius: 20px
 
         self.layout = QVBoxLayout()
 
@@ -60,7 +66,7 @@ class Menu(QWidget):
         self.image = QLabel()
         self.image_pixmap = QPixmap('gui/mate_logo_2_3_40.png')
         self.image_pixmap.scaled(0.3, 0.3, Qt.KeepAspectRatio)
-        # self.image_pixmap.setAlignment(Qt.AlignHCenter)
+        self.image.setAlignment(Qt.AlignHCenter)
 
         self.image.setFixedSize(250, 280)
 
@@ -93,8 +99,8 @@ class Menu(QWidget):
         self.tabs_widget.layout.addWidget(self.cam_grid_button)
         self.tabs_widget.layout.addWidget(self.cam_1_button)
         self.tabs_widget.layout.addWidget(self.cam_2_button)
-        self.tabs_widget.layout.addWidget(self.cam_3_button)
-        self.tabs_widget.layout.addWidget(self.cam_4_button)
+        # self.tabs_widget.layout.addWidget(self.cam_3_button)
+        # self.tabs_widget.layout.addWidget(self.cam_4_button)
         self.tabs_widget.layout.addWidget(self.log_button)
 
         self.tabs_widget.setLayout(self.tabs_widget.layout)
@@ -153,10 +159,11 @@ class Tabs(QTabWidget):
         self.addTab(self.cam_4_tab, 'Camera 4')
         self.addTab(self.log_tab, 'Logs')
 
-        self.setTabPosition(QTabWidget.East)
+        self.setTabPosition(QTabWidget.West)
 
         self.setDocumentMode(True)
         self.tabBar().hide()
+
 
 class CameraTab(QWidget):
     def __init__(self):
@@ -176,6 +183,7 @@ class CameraTab(QWidget):
         self.layout.addWidget(self.cam4, 1,1)
 
         self.setLayout(self.layout)
+
 
 class Camera(QCameraViewfinder):
     def __init__(self, port):
@@ -236,8 +244,27 @@ class TabButton(QPushButton):
     def __init__(self, name):
         super().__init__(name)
 
-        self.setStyleSheet('color: white; font: bold 18px; background: rgb(25, 38, 62); \
-            border-radius: 10px; padding: 10px; margin: 2px; border: 5px solid rgb(26, 45, 69)')#'QLabel::hover''{''background: green''}')
+        self.setStyleSheet("""
+            QPushButton {
+                background: qlineargradient(
+                    spread: pad, x1:0, y1:0.5, x2:1, y2:0.5, stop:0 rgb(25, 38, 62), stop:1 rgb(26, 45, 69)
+                );
+                color: white;
+
+                padding: 10px;
+                font: bold 18px;
+
+                border-radius: 10px;
+                margin: 2px
+            }
+
+            QPushButton:hover {
+                background: rgb(45, 58, 82);
+            }
+        """)
+
+        # self.setStyleSheet('color: white; font: bold 18px; background: rgb(25, 38, 62); \
+        #     border-radius: 10px; padding: 10px; margin: 2px; border: 5px solid rgb(26, 45, 69)')#'QLabel::hover''{''background: green''}')
         
 
 
