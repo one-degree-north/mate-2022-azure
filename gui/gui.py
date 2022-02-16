@@ -1,83 +1,228 @@
-from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QTabWidget, QGridLayout, QHBoxLayout, QLabel, QPushButton, QPlainTextEdit, QDialog, QTabBar
+from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QTabWidget, QGridLayout, QHBoxLayout, QLabel, QPushButton, QPlainTextEdit, QDialog, QVBoxLayout, QPushButton, QLabel, QToolTip, QLineEdit
 from PyQt5.QtMultimedia import QCameraInfo, QCamera
 from PyQt5.QtMultimediaWidgets import QCameraViewfinder
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QTextCursor
+from PyQt5.QtCore import Qt, QPropertyAnimation, QPoint
+from PyQt5.QtGui import QTextCursor, QPixmap
+
+from time import sleep
 
 import sys
 import yaml
 import logging
-from time import sleep
-from threading import Thread
-import asyncio
 
 class AzureUI(QMainWindow):
     def __init__(self):
         super().__init__()
 
         self.setWindowTitle('Azure UI')
+        self.setStyleSheet('background: rgb(24, 40, 61)')
 
-        self.resize(800,446)
-        # self.setMinimumSize(800,446)
+        self.frame = QWidget()
+        self.frame.layout = QHBoxLayout()
 
-        self.tabs = Tabs()
-        # self.tabs.setStyleSheet('background: green; border-radius: 12px')
+        self.menu = MenuBar(self)
+        self.active = ActiveTab()
 
-        self.test = QWidget()
-        self.setCentralWidget(self.test)
 
-        self.layout = QHBoxLayout()
+        # self.menu = Menu(self)
+        # self.tabs = Tabs()
+
+        # # self.menu.setStyleSheet('background: rgb(17, 28, 43); border-top-right-radius: 20px; border-bottom-right-radius: 20px')
+        # # self.menu.setFixedWidth(300)
+
+
+        self.frame.layout.addWidget(self.menu)
+        self.frame.layout.addWidget(self.active)
+
+        self.frame.layout.setContentsMargins(0,0,0,0)
+
+
+        self.frame.setLayout(self.frame.layout)
+        self.setCentralWidget(self.frame)
+
+    def keyPressEvent(self, e):
+        if e.key() == Qt.Key_H:
+            if not self.menu.isVisible():
+                self.menu.show()
+
+                self.animation = QPropertyAnimation(self.menu, b'pos')
+                self.animation.setStartValue(QPoint(-260,0))
+                self.animation.setEndValue(QPoint(0,0))
+                self.animation.setDuration(200)
+                self.animation.start()
+
+            else:
+                self.animation = QPropertyAnimation(self.menu, b'pos')
+                self.animation.setStartValue(QPoint(0,0))
+                self.animation.setEndValue(QPoint(-260,0))
+                self.animation.setDuration(200)
+                self.animation.start()
+
+                self.animation.finished.connect(lambda: self.menu.hide())
+                # self.animation.stop()
+            # self.update() #######
+
+        elif e.key() == Qt.Key_1:
+            self.active.setCurrentIndex(0)
+        elif e.key() == Qt.Key_2:
+            self.active.setCurrentIndex(1)
+        elif e.key() == Qt.Key_3:
+            self.active.setCurrentIndex(2)
+        elif e.key() == Qt.Key_4:
+            self.active.setCurrentIndex(3)
+        elif e.key() == Qt.Key_5:
+            self.active.setCurrentIndex(4)
+
+        ###### update_log((e, e.key()))
+        
+class MenuBar(QWidget):
+    def __init__(self, parent):
+        super().__init__()
+        self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
+        
+        self.setStyleSheet("""
+            QWidget {
+                background: rgb(17, 28, 43);
+                border-top-right-radius: 20px;
+                border-bottom-right-radius: 20px;
+            }
+        """)
+
+        # Image
+        self.image = QLabel()
+        self.pixmap = QPixmap('gui/odn-logo.png')
+        self.pixmap.scaled(0.3, 0.3, Qt.KeepAspectRatio)
+
+        self.image.setFixedSize(230, 260)
+
+        self.image.setPixmap(self.pixmap)
+        self.image.setAlignment(Qt.AlignHCenter)
+        self.image.setStyleSheet("""
+            QWidget {
+                padding: 10px
+            }
+        """)
+
+        # Tab buttons
+        self.menu_button = TabButton('Menu')
+        self.menu_button.clicked.connect(lambda: parent.active.setCurrentIndex(0))
+        
+        self.grid_button = TabButton('Camera Grid')
+        self.grid_button.clicked.connect(lambda: parent.active.setCurrentIndex(1))
+
+        self.cam1_button = TabButton('Camera 1')
+        self.cam1_button.clicked.connect(lambda: parent.active.setCurrentIndex(2))
+
+        self.cam2_button = TabButton('Camera 2')
+        self.cam2_button.clicked.connect(lambda: parent.active.setCurrentIndex(3))
+
+        self.logs_button = TabButton('Logs')
+        self.logs_button.clicked.connect(lambda: parent.active.setCurrentIndex(4))
+
+        # Tab layout
+        self.tabs = QWidget()
+        self.tabs.layout = QVBoxLayout()
+
+        self.tabs.layout.addWidget(self.menu_button)
+        self.tabs.layout.addWidget(self.grid_button)
+        self.tabs.layout.addWidget(self.cam1_button)
+        self.tabs.layout.addWidget(self.cam2_button)
+        self.tabs.layout.addWidget(self.logs_button)
+
+        self.tabs.setLayout(self.tabs.layout)
+
+
+        # Bar layout
+        self.layout = QVBoxLayout()
+
+        self.layout.addWidget(self.image)
+        self.layout.addStretch()
         self.layout.addWidget(self.tabs)
 
-        self.test.setLayout(self.layout)
+        self.setLayout(self.layout)
+    
 
-
-class Tabs(QTabWidget):
+class ActiveTab(QTabWidget):
     def __init__(self):
         super().__init__()
-
-        self.camera_tab = CameraTab()
+        self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
+        
+        self.menu_tab = MenuTab()
+        self.grid_tab = CameraGrid()
+        self.cam1_tab = Camera(settings_yml['camera-ports']['cam-1'])
+        self.cam2_tab = Camera(settings_yml['camera-ports']['cam-2'])
         self.logs_tab = LogsTab()
-        self.settings_tab = SettingsTab()
 
-        self.addTab(self.camera_tab, 'Camera Grid')
-        self.addTab(Camera(settings_yml['camera-ports']['cam-1']), 'Camera 1')
-        self.addTab(Camera(settings_yml['camera-ports']['cam-2']), 'Camera 2')
-        self.addTab(Camera(settings_yml['camera-ports']['cam-3']), 'Camera 3')
-        self.addTab(Camera(settings_yml['camera-ports']['cam-4']), 'Camera 4')
+
+        self.addTab(self.menu_tab, 'Menu')
+        self.addTab(self.grid_tab, 'Camera Grid')
+        self.addTab(self.cam1_tab, 'Camera 1')
+        self.addTab(self.cam2_tab, 'Camera 2')
         self.addTab(self.logs_tab, 'Logs')
-        self.addTab(self.settings_tab, 'Settings')
+
+        self.setTabPosition(QTabWidget.West)
 
         self.setDocumentMode(True)
+        self.tabBar().hide()
 
-        self.setTabPosition(QTabWidget.West if settings_yml['vertical-tabs'] else QTabWidget.North)
 
-class CameraTab(QWidget):
+class CameraGrid(QWidget):
     def __init__(self):
         super().__init__()
 
-        self.layout = QGridLayout()
+        self.layout = QHBoxLayout()
         # self.layout.setSpacing(0)
 
         self.cam1 = Camera(settings_yml['camera-ports']['cam-1'])
         self.cam2 = Camera(settings_yml['camera-ports']['cam-2'])
-        self.cam3 = Camera(settings_yml['camera-ports']['cam-3'])
-        self.cam4 = Camera(settings_yml['camera-ports']['cam-4'])
 
-        self.layout.addWidget(self.cam1, 0,0)
-        self.layout.addWidget(self.cam2, 0,1)
-        self.layout.addWidget(self.cam3, 1,0)
-        self.layout.addWidget(self.cam4, 1,1)
+        self.layout.addWidget(self.cam1)
+        self.layout.addWidget(self.cam2)
 
         self.setLayout(self.layout)
 
-class Camera(QCameraViewfinder):
+
+class RawCamera(QCameraViewfinder):
     def __init__(self, port):
         super().__init__()
 
         self.camera = QCamera(cameras[port])
         self.camera.setViewfinder(self)
         self.camera.start()
+
+class Camera(QWidget):
+    def __init__(self, port):
+        super().__init__()
+        self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
+
+        # self.setStyleSheet("""
+        #     QWidget {
+        #         background: rgb(17, 28, 43);
+        #         border-radius: 8px;
+        #         margin: 10px
+        #     }
+        # """)
+
+        # Defining objects
+        self.camera = RawCamera(port)
+        self.label = QLabel(f'Port {port}')
+
+        self.label.setStyleSheet("""
+            QLabel {
+                color: white;
+                font: bold 30px
+            }
+        """)
+
+        # Layout
+        self.layout = QVBoxLayout()
+
+        self.layout.addWidget(self.label)
+        self.layout.addWidget(self.camera)
+
+
+        self.setLayout(self.layout)
+
 
 class LoggerBox(logging.Handler):
     def __init__(self, parent):
@@ -89,19 +234,14 @@ class LoggerBox(logging.Handler):
     def emit(self, record):
         self.msg = self.format(record)
         self.logger.appendPlainText(self.msg)
-        # QApplication.processEvents()
-        # self.logger.moveCursor(QTextCursor.End)
-        # self.messages_text_box.moveCursor(QtGui.QTextCursor.End)
-
-# class Logger(QDialog, QPlainTextEdit):
 
 
-class LogsTab(QDialog, QPlainTextEdit):
+class Logs(QDialog, QPlainTextEdit):
     def __init__(self):
         super().__init__()
 
         self.logger = LoggerBox(self)
-        self.logger.setFormatter(logging.Formatter('[%(asctime)s] %(message)s', '%H:%M:%S'))
+        self.logger.setFormatter(logging.Formatter('[%(asctime)s] [%(levelname)s] %(message)s', '%H:%M:%S')) #LOGGING TYPE
 
         logging.getLogger().addHandler(self.logger)
         logging.getLogger().setLevel(logging.DEBUG)
@@ -113,40 +253,115 @@ class LogsTab(QDialog, QPlainTextEdit):
         self.setLayout(self.layout)
 
         for _ in range(20):
-            self.update_log('ok')
+            logging.debug('why')
 
         # for _ in range(40):
         #     sleep(0.7)
         #     self.update_log('testinfijgwsojdasfpoisjsdafoisjdjsfsais')
-    
-    def update_log(self, msg):
-        logging.debug(msg)
 
-class SettingsTab(QWidget):
+class MenuTab(QWidget):
     def __init__(self):
         super().__init__()
 
+class CommandLine(QLineEdit):
+    def __init__(self):
+        super().__init__()
 
-# async def testing_func(x):
-#     for _ in range(100):
-#         x.tabs.logs_tab.update_log('a')
-#         await asyncio.sleep(0.5)
+        self.setStyleSheet("""
+            QWidget {
+                background: rgb(235, 235, 235);
+                border-radius: 5px;
+                padding: 10px
+            }
+        """)
 
-"""
-class TestingLog(Thread):
-    def __init__(self, window_name):
-        Thread.__init__(self)
-        self.daemon = True
-        self.start()
+        self.setPlaceholderText('"help" for commands')
 
-    def run(self):
-        for _ in range(1000000):
-            sleep(0.01)
-            window.tabs.logs_tab.update_log('ok')
-"""
+        self.returnPressed.connect(self.command_event)
+
+    def command_event(self):
+        self.split_text = self.text().split(' ')
+        self.clear()
+
+        if self.split_text[0] == 'help':
+            logging.info('figure it out yourself')
+
+        elif self.split_text[0] == 'return':
+            if not len(self.split_text) > 1:
+                logging.error('Please provide additional argument(s)')
+            else:
+                logging.info(' '.join(self.split_text[1:]))
+
+        elif self.split_text[0] == 'ping':
+            pass # ping to robot (maybe)
+        
+        elif self.split_text[0] == 'clear':
+            pass # clear logs
+        
+        else:
+            logging.error(f'Command "{self.split_text[0]}" does not exist')
+
+class LogsTab(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
+
+        self.setStyleSheet("""
+            QWidget {
+                background: rgb(245, 245, 245);
+                border-radius: 10px;
+                margin: 20px
+            }
+        """)
+
+        self.logs = Logs()
+        self.textbox = CommandLine()
+
+
+        self.layout = QVBoxLayout()
+
+
+        self.layout.addWidget(self.logs)
+        self.layout.addWidget(self.textbox)
+
+        self.layout.setSpacing(0)
+
+        self.setLayout(self.layout)
+        # self.setAttribute(Qt.WA_TranslucentBackground)
+
+
+
+
+
+class TabButton(QPushButton):
+    def __init__(self, name):
+        super().__init__(name)
+
+        self.setStyleSheet("""
+            QPushButton {
+                background: qlineargradient(
+                    spread: pad, x1:0, y1:0.5, x2:1, y2:0.5, stop:0 rgb(25, 38, 62), stop:1 rgb(26, 45, 69)
+                );
+                color: rgb(210, 211, 210);
+
+                padding: 10px;
+                font: bold 20px;
+
+                border-radius: 10px
+            }
+
+            QPushButton:hover {
+                background: rgb(45, 58, 82)
+            }
+        """)
+
+        # self.setStyleSheet('color: white; font: bold 18px; background: rgb(25, 38, 62); \
+        #     border-radius: 10px; padding: 10px; margin: 2px; border: 5px solid rgb(26, 45, 69)')#'QLabel::hover''{''background: green''}')
+        
+
 
 if __name__ == '__main__':
-    # Defining global variables
+    # Defining global variables/functions
     cameras = QCameraInfo.availableCameras()
 
     with open('gui/settings.yml', 'r') as f:
@@ -159,21 +374,4 @@ if __name__ == '__main__':
     window = AzureUI()
     window.show()
 
-    # TestingLog(window)
-
-    # t1 = Thread(target=testing_func(window))
-    # t1.start()
-
     sys.exit(app.exec())
-
-# t = Thread(target=threaded_func(window))
-# t.start()
-
-    
-
-
-# cameras = QCameraInfo.availableCameras()
-
-# with open('gui/settings.yml', 'r') as f:
-#     settings_yml = yaml.safe_load(f)
-# print(settings_yml)

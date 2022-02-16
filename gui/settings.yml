@@ -1,7 +1,4 @@
-dark-theme: true # default is dark, false means light theme
-vertical-tabs: true
+dark-theme: true # maybe later
 camera-ports:
   cam-1: 1
   cam-2: 0
-  cam-3: 0
-  cam-4: 1
