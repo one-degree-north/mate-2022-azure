@@ -1,10 +1,8 @@
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QTabWidget, QGridLayout, QHBoxLayout, QLabel, QPushButton, QPlainTextEdit, QDialog, QVBoxLayout, QPushButton, QLabel, QToolTip, QLineEdit
-from PyQt5.QtMultimedia import QCameraInfo, QCamera
-from PyQt5.QtMultimediaWidgets import QCameraViewfinder
-from PyQt5.QtCore import Qt, QPropertyAnimation, QPoint
+from PyQt5.QtCore import Qt, QPropertyAnimation, QPoint, QThread
 from PyQt5.QtGui import QTextCursor, QPixmap
 
-from time import sleep
+import cv2
 
 import sys
 import yaml
@@ -182,13 +180,16 @@ class CameraGrid(QWidget):
         self.setLayout(self.layout)
 
 
-class RawCamera(QCameraViewfinder):
-    def __init__(self, port):
-        super().__init__()
+# class RawCamera(QCameraViewfinder):
+#     def __init__(self, port):
+#         super().__init__()
 
-        self.camera = QCamera(cameras[port])
-        self.camera.setViewfinder(self)
-        self.camera.start()
+#         self.camera = QCamera(cameras[port])
+#         self.camera.setViewfinder(self)
+#         self.camera.start()
+
+# class RawCamera(QThread):
+#     VideoCapture()
 
 class Camera(QWidget):
     def __init__(self, port):
