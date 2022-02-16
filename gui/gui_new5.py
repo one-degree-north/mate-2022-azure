@@ -1,8 +1,10 @@
-from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QTabWidget, QGridLayout, QHBoxLayout, QLabel, QPushButton, QPlainTextEdit, QDialog, QVBoxLayout, QPushButton, QLabel, QToolTip
+from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QTabWidget, QGridLayout, QHBoxLayout, QLabel, QPushButton, QPlainTextEdit, QDialog, QVBoxLayout, QPushButton, QLabel, QToolTip, QLineEdit
 from PyQt5.QtMultimedia import QCameraInfo, QCamera
 from PyQt5.QtMultimediaWidgets import QCameraViewfinder
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QPropertyAnimation, QPoint
 from PyQt5.QtGui import QTextCursor, QPixmap
+
+from time import sleep
 
 import sys
 import yaml
@@ -42,9 +44,24 @@ class AzureUI(QMainWindow):
         if e.key() == Qt.Key_H:
             if not self.menu.isVisible():
                 self.menu.show()
+
+                self.animation = QPropertyAnimation(self.menu, b'pos')
+                self.animation.setStartValue(QPoint(-260,0))
+                self.animation.setEndValue(QPoint(0,0))
+                self.animation.setDuration(150)
+                self.animation.start()
+
             else:
-                self.menu.hide()
-            self.update() #######
+                self.animation = QPropertyAnimation(self.menu, b'pos')
+                self.animation.setStartValue(QPoint(0,0))
+                self.animation.setEndValue(QPoint(-260,0))
+                self.animation.setDuration(150)
+                self.animation.start()
+
+                self.animation.finished.connect(lambda: self.menu.hide())
+                # self.animation.stop()
+            # self.update() #######
+
         elif e.key() == Qt.Key_1:
             self.active.setCurrentIndex(0)
         elif e.key() == Qt.Key_2:
@@ -55,6 +72,8 @@ class AzureUI(QMainWindow):
             self.active.setCurrentIndex(3)
         elif e.key() == Qt.Key_5:
             self.active.setCurrentIndex(4)
+
+        ###### update_log((e, e.key()))
         
 class MenuBar(QWidget):
     def __init__(self, parent):
@@ -74,7 +93,7 @@ class MenuBar(QWidget):
         self.pixmap = QPixmap('gui/my-image.png')
         self.pixmap.scaled(0.3, 0.3, Qt.KeepAspectRatio)
 
-        self.image.setFixedSize(250, 280)
+        self.image.setFixedSize(230, 260)
 
         self.image.setPixmap(self.pixmap)
         self.image.setAlignment(Qt.AlignHCenter)
@@ -110,8 +129,6 @@ class MenuBar(QWidget):
         self.tabs.layout.addWidget(self.cam2_button)
         self.tabs.layout.addWidget(self.logs_button)
 
-        # self.tabs.setFixedSize(100,200)
-
         self.tabs.setLayout(self.tabs.layout)
 
 
@@ -119,6 +136,7 @@ class MenuBar(QWidget):
         self.layout = QVBoxLayout()
 
         self.layout.addWidget(self.image)
+        self.layout.addStretch()
         self.layout.addWidget(self.tabs)
 
         self.setLayout(self.layout)
@@ -234,18 +252,33 @@ class Logs(QDialog, QPlainTextEdit):
         self.setLayout(self.layout)
 
         for _ in range(20):
-            self.update_log('ok')
+            update_log('ok')
 
         # for _ in range(40):
         #     sleep(0.7)
         #     self.update_log('testinfijgwsojdasfpoisjsdafoisjdjsfsais')
-    
-    def update_log(self, msg):
-        logging.debug(msg)
 
 class MenuTab(QWidget):
     def __init__(self):
         super().__init__()
+
+class CommandLine(QLineEdit):
+    def __init__(self):
+        super().__init__()
+
+        self.setStyleSheet("""
+            QWidget {
+                background: rgb(235, 235, 235);
+                border-radius: 5px;
+                padding: 10px
+            }
+        """)
+
+        self.returnPressed.connect(self.command_event)
+
+    def command_event(self):
+        update_log(self.text())
+        self.clear()
 
 class LogsTab(QWidget):
     def __init__(self):
@@ -261,14 +294,19 @@ class LogsTab(QWidget):
         """)
 
         self.logs = Logs()
+        self.textbox = CommandLine()
+
 
         self.layout = QVBoxLayout()
 
 
         self.layout.addWidget(self.logs)
+        self.layout.addWidget(self.textbox)
+
+        self.layout.setSpacing(0)
 
         self.setLayout(self.layout)
-        self.setAttribute(Qt.WA_TranslucentBackground)
+        # self.setAttribute(Qt.WA_TranslucentBackground)
 
 
 
@@ -283,10 +321,10 @@ class TabButton(QPushButton):
                 background: qlineargradient(
                     spread: pad, x1:0, y1:0.5, x2:1, y2:0.5, stop:0 rgb(25, 38, 62), stop:1 rgb(26, 45, 69)
                 );
-                color: white;
+                color: rgb(210, 211, 210);
 
-                padding: 20px;
-                font: bold 18px;
+                padding: 10px;
+                font: bold 20px;
 
                 border-radius: 10px
             }
@@ -302,12 +340,15 @@ class TabButton(QPushButton):
 
 
 if __name__ == '__main__':
-    # Defining global variables
+    # Defining global variables/functions
     cameras = QCameraInfo.availableCameras()
 
     with open('gui/settings.yml', 'r') as f:
         settings_yml = yaml.safe_load(f)
     print(settings_yml)
+
+    def update_log(msg):
+        logging.debug(msg)
 
     # Create UI application
     app = QApplication([])
