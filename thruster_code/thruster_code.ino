@@ -108,3 +108,4 @@ void reportIMUData() {
     Serial.write(gyro->accel.x);
     Serial.write(gyro->accel.y);
     Serial.write(gyro->accel.z);
+}
