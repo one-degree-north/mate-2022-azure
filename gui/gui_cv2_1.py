@@ -1,12 +1,12 @@
-from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QTabWidget, QGridLayout, QHBoxLayout, QLabel, QPushButton, QPlainTextEdit, QDialog, QVBoxLayout, QPushButton, QLabel, QToolTip, QLineEdit
-from PyQt5.QtMultimedia import QCameraInfo, QCamera
-from PyQt5.QtMultimediaWidgets import QCameraViewfinder
-from PyQt5.QtCore import Qt, QPropertyAnimation, QPoint
-from PyQt5.QtGui import QTextCursor, QPixmap
+from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QTabWidget, QGridLayout, QHBoxLayout, \
+    QLabel, QPushButton, QPlainTextEdit, QDialog, QVBoxLayout, QPushButton, QLabel, QLineEdit
+from PyQt5.QtCore import Qt, QThread, pyqtSignal
+from PyQt5.QtGui import QTextCursor, QPixmap, QImage
 
 from time import sleep
 
 import sys
+import cv2
 import yaml
 import logging
 
@@ -31,8 +31,13 @@ class AzureUI(QMainWindow):
         # # self.menu.setFixedWidth(300)
 
 
-        self.frame.layout.addWidget(self.menu)
-        self.frame.layout.addWidget(self.active)
+        # self.frame.layout.addWidget(self.menu)
+        # self.frame.layout.addWidget(self.active)
+        self.testing = CameraThread(0)
+        self.testing.start()
+
+        self.testing_l = QLabel()
+
 
         self.frame.layout.setContentsMargins(0,0,0,0)
 
@@ -40,27 +45,23 @@ class AzureUI(QMainWindow):
         self.frame.setLayout(self.frame.layout)
         self.setCentralWidget(self.frame)
 
+        # self.animation = QPropertyAnimation(self.menu, b'pos')
+        # self.animation.setStartValue(QPoint(-260,0))
+        # self.animation.setEndValue(QPoint(0,0))
+        # self.animation.setDuration(200)
+
+        self.key_logging = False
+    
+    def ImageUpdateSlot(self, image):
+        self.testing_l.setPixmap(QPixmap.fromImage(image))
+
+
     def keyPressEvent(self, e):
         if e.key() == Qt.Key_H:
-            if not self.menu.isVisible():
-                self.menu.show()
-
-                self.animation = QPropertyAnimation(self.menu, b'pos')
-                self.animation.setStartValue(QPoint(-260,0))
-                self.animation.setEndValue(QPoint(0,0))
-                self.animation.setDuration(200)
-                self.animation.start()
-
+            if self.menu.isVisible():
+                self.menu.hide()
             else:
-                self.animation = QPropertyAnimation(self.menu, b'pos')
-                self.animation.setStartValue(QPoint(0,0))
-                self.animation.setEndValue(QPoint(-260,0))
-                self.animation.setDuration(200)
-                self.animation.start()
-
-                self.animation.finished.connect(lambda: self.menu.hide())
-                # self.animation.stop()
-            # self.update() #######
+                self.menu.show()
 
         elif e.key() == Qt.Key_1:
             self.active.setCurrentIndex(0)
@@ -73,7 +74,10 @@ class AzureUI(QMainWindow):
         elif e.key() == Qt.Key_5:
             self.active.setCurrentIndex(4)
 
-        ###### update_log((e, e.key()))
+        elif self.key_logging and e.text() != chr(13):
+            logging.debug(f'Key "{e.text() if e.text().isascii() else None}" pressed')
+
+
         
 class MenuBar(QWidget):
     def __init__(self, parent):
@@ -171,7 +175,6 @@ class CameraGrid(QWidget):
         super().__init__()
 
         self.layout = QHBoxLayout()
-        # self.layout.setSpacing(0)
 
         self.cam1 = Camera(settings_yml['camera-ports']['cam-1'])
         self.cam2 = Camera(settings_yml['camera-ports']['cam-2'])
@@ -182,13 +185,28 @@ class CameraGrid(QWidget):
         self.setLayout(self.layout)
 
 
-class RawCamera(QCameraViewfinder):
+class CameraThread(QThread):
     def __init__(self, port):
         super().__init__()
 
-        self.camera = QCamera(cameras[port])
-        self.camera.setViewfinder(self)
-        self.camera.start()
+        self.camera = pyqtSignal(QImage)
+        def run(self):
+            self.active = True
+            self.capture = cv2.VideoCapture(0) # 0 = port
+
+            while self.active:
+                ret, frame = self.capture.read()
+                if ret:
+                    self.image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+                    self.flipped = cv2.flip(self.image, 1)
+
+                    self.convert = QImage(self.flipped.data, self.flipped.shape[1], self.flipped.shape[0], QImage.Format_RGB888)
+                    self.picture = self.convert.scaled(640, 480, Qt.KeepAspectRatio)
+                    self.ImageUpdate.emit(self.picture)
+
+        def stop(self):
+            self.active = False
+            self.stop()
 
 class Camera(QWidget):
     def __init__(self, port):
@@ -252,12 +270,15 @@ class Logs(QDialog, QPlainTextEdit):
 
         self.setLayout(self.layout)
 
-        for _ in range(20):
-            logging.debug('why')
+        # for _ in range(20):
+        #     logging.debug('why')
 
         # for _ in range(40):
         #     sleep(0.7)
         #     self.update_log('testinfijgwsojdasfpoisjsdafoisjdjsfsais')
+
+    def reject(self):
+        pass
 
 class MenuTab(QWidget):
     def __init__(self):
@@ -281,16 +302,54 @@ class CommandLine(QLineEdit):
 
     def command_event(self):
         self.split_text = self.text().split(' ')
+
         self.clear()
 
         if self.split_text[0] == 'help':
-            logging.info('figure it out yourself')
+            logging.info("""
+
+                help - shows this menu
+                return (++) - returns text to logs
+                exit - stops the program
+
+                tabs - toggles between styled tabs and regular tabs (styled by default)
+                keys - toggles logging for keyboard presses (off by default)
+                controller - toggles logging for controller (off by default)
+
+                "()" = required
+                "[]" = optional
+                "+" = any value
+                "++" = one or more values
+                """)
 
         elif self.split_text[0] == 'return':
             if not len(self.split_text) > 1:
                 logging.error('Please provide additional argument(s)')
             else:
                 logging.info(' '.join(self.split_text[1:]))
+
+        elif self.split_text[0] == 'exit':
+            exit()
+
+
+        elif self.split_text[0] == 'tabs':
+            if window.active.tabBar().isVisible():
+                window.active.tabBar().hide()
+                window.frame.layout.insertWidget(0, window.menu)
+            else:
+                window.active.tabBar().show()
+                window.frame.layout.removeWidget(window.menu)
+
+            logging.info('Toggled styled tabs')
+
+        elif self.split_text[0] == 'keys':
+            if window.key_logging:
+                window.key_logging = False
+            else:
+                window.key_logging = True
+
+            logging.info('Toggled key logging')
+
 
         elif self.split_text[0] == 'ping':
             pass # ping to robot (maybe)
@@ -355,10 +414,6 @@ class TabButton(QPushButton):
             }
         """)
 
-        # self.setStyleSheet('color: white; font: bold 18px; background: rgb(25, 38, 62); \
-        #     border-radius: 10px; padding: 10px; margin: 2px; border: 5px solid rgb(26, 45, 69)')#'QLabel::hover''{''background: green''}')
-        
-
 
 if __name__ == '__main__':
     # Defining global variables/functions
@@ -373,5 +428,7 @@ if __name__ == '__main__':
 
     window = AzureUI()
     window.show()
+
+    logging.info('Azure UI has loaded sucessfully')
 
     sys.exit(app.exec())
