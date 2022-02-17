@@ -92,20 +92,25 @@ void loop() {
   }
    reportIMUData();
 }
-
 void reportIMUData() {
-    sensors_event_t orientation , gyro , accel;
+    sensors_event_t event; 
+    bno.getEvent(&event);
+    sensors_event_t orientation, gyro, accel;
     bno.getEvent(&orientation, Adafruit_BNO055::VECTOR_EULER);
     bno.getEvent(&gyro, Adafruit_BNO055::VECTOR_GYROSCOPE);
     bno.getEvent(&accel, Adafruit_BNO055::VECTOR_LINEARACCEL);
+
+    Serial.write(0xA4);
   
-    Serial.write(gyro->orientation.x);
-    Serial.write(gyro->orientation.y);
-    Serial.write(gyro->orientation.z);
-    Serial.write(gyro->gyro.x);
-    Serial.write(gyro->gyro.y);
-    Serial.write(gyro->gyro.z);
-    Serial.write(gyro->accel.x);
-    Serial.write(gyro->accel.y);
-    Serial.write(gyro->accel.z);
+    Serial.write(orientation.orientation.x);
+    Serial.write(orientation.orientation.y);
+    Serial.write(orientation.orientation.z);
+    Serial.write(gyro.gyro.x);
+    Serial.write(gyro.gyro.y);
+    Serial.write(gyro.gyro.z);
+    Serial.write(accel.acceleration.x);
+    Serial.write(accel.acceleration.y);
+    Serial.write(accel.acceleration.z);
+
+    Serial.write(0x56);
 }
