@@ -1,15 +1,15 @@
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QTabWidget, QGridLayout, QHBoxLayout, \
     QLabel, QPushButton, QPlainTextEdit, QDialog, QVBoxLayout, QPushButton, QLabel, QLineEdit
-from PyQt5.QtMultimedia import QCameraInfo, QCamera
-from PyQt5.QtMultimediaWidgets import QCameraViewfinder
-from PyQt5.QtCore import Qt, QTimer, QPropertyAnimation, QPoint, QAbstractAnimation
-from PyQt5.QtGui import QTextCursor, QPixmap
+from PyQt5.QtCore import Qt, QTimer, QPropertyAnimation, QPoint, QAbstractAnimation, QThread, pyqtSignal, pyqtSlot
+from PyQt5.QtGui import QTextCursor, QPixmap, QImage, QResizeEvent
 
-from time import sleep
+from numpy import ndarray
+from datetime import datetime
 
 import sys
 import yaml
 import logging
+import cv2
 
 class AzureUI(QMainWindow):
     def __init__(self):
@@ -24,14 +24,6 @@ class AzureUI(QMainWindow):
         self.menu = MenuBar(self)
         self.active = ActiveTab()
 
-
-        # self.menu = Menu(self)
-        # self.tabs = Tabs()
-
-        # # self.menu.setStyleSheet('background: rgb(17, 28, 43); border-top-right-radius: 20px; border-bottom-right-radius: 20px')
-        # # self.menu.setFixedWidth(300)
-
-
         self.frame.layout.addWidget(self.menu)
         self.frame.layout.addWidget(self.active)
 
@@ -41,43 +33,25 @@ class AzureUI(QMainWindow):
         self.frame.setLayout(self.frame.layout)
         self.setCentralWidget(self.frame)
 
-        # self.animation = QPropertyAnimation(self.menu, b'pos')
-        # self.animation.setStartValue(QPoint(-260,0))
-        # self.animation.setEndValue(QPoint(0,0))
-        # self.animation.setDuration(200)
-
         self.key_logging = False
 
     def keyPressEvent(self, e):
-        if e.key() == Qt.Key_H:
+        if e.key() == Qt.Key_Tab:
             if self.menu.isVisible():
-                # self.menu.show()
-                # # self.animation.setDirection(QAbstractAnimation.Forward)
-                # self.animation.setStartValue(QPoint(-260,0))
-                # self.animation.setEndValue(QPoint(0,0))
-                # self.animation.start()
-                self.animation_state = 0
                 self.menu.hide()
                 
-                
-
             else:
-                # # self.animation = QPropertyAnimation(self.menu, b'pos')
-                # # self.animation.setStartValue(QPoint(0,0))
-                # self.animation.setStartValue(QPoint(0,0))
-                # self.animation.setEndValue(QPoint(-260,0))
-                # # self.animation.setEndValue(QPoint(-260,0))
-                # # self.animation.setDuration(200)
-                # # self.animation.setDirection(QAbstractAnimation.Backward)
-                # self.animation.start()
-                # # self.menu.hide()
-                self.animation_state = 1
                 self.menu.show()
 
-                # self.animation.finished.connect(lambda: self.menu.hide())
-                # self.animation.stop()
-            # self.update() #######
-            self.animation_event()
+        elif e.key() == Qt.Key_T:
+            if self.active.tabBar().isVisible():
+                self.active.tabBar().hide()
+                self.frame.layout.insertWidget(0, window.menu)
+            else:
+                self.active.tabBar().show()
+                self.frame.layout.removeWidget(window.menu)
+
+            logging.info('Toggled styled tabs')
 
         elif e.key() == Qt.Key_1:
             self.active.setCurrentIndex(0)
@@ -89,26 +63,9 @@ class AzureUI(QMainWindow):
             self.active.setCurrentIndex(3)
         elif e.key() == Qt.Key_5:
             self.active.setCurrentIndex(4)
+
         elif self.key_logging and e.text() != chr(13):
             logging.debug(f'Key "{e.text() if e.text().isascii() else None}" pressed')
-
-        ###### update_log((e, e.key()))
-    
-    def on_anim_closed(self):
-        self.menu.hide()
-        # self.animation.setStartValue(QPoint(-260,0))
-        # self.animation.setEndValue(QPoint(0,0))
-        # self.animation.setDuration(200)
-
-    def anim(self):
-        self.menu.show()
-
-    def animation_event(self):
-        if self.animation_state:
-            print('no')
-        else:
-            print('ok')
-
         
         
 class MenuBar(QWidget):
@@ -127,7 +84,7 @@ class MenuBar(QWidget):
         # Image
         self.image = QLabel()
         self.pixmap = QPixmap('gui/odn-logo.png')
-        self.pixmap.scaled(0.3, 0.3, Qt.KeepAspectRatio)
+        self.pixmap.scaled(1, 1, Qt.KeepAspectRatio)
 
         self.image.setFixedSize(230, 260)
 
@@ -205,59 +162,173 @@ class ActiveTab(QTabWidget):
 class CameraGrid(QWidget):
     def __init__(self):
         super().__init__()
-
         self.layout = QHBoxLayout()
-        # self.layout.setSpacing(0)
+        self.layout.setSpacing(0)
 
-        self.cam1 = Camera(settings_yml['camera-ports']['cam-1'])
-        self.cam2 = Camera(settings_yml['camera-ports']['cam-2'])
+        self.display_width = 320
+        self.display_height = 240
+
+
+        self.cam1 = self.Camera(self, settings_yml['camera-ports']['cam-1'])
+        self.cam2 = self.Camera(self, settings_yml['camera-ports']['cam-2'])
+
 
         self.layout.addWidget(self.cam1)
         self.layout.addWidget(self.cam2)
 
         self.setLayout(self.layout)
 
+        self.resizeEvent = self.camera_resize
 
-class RawCamera(QCameraViewfinder):
+    def camera_resize(self, resizeEvent: QResizeEvent):
+        self.display_width, self.display_height = (self.cam1.width() + self.cam2.width())/2, (self.cam1.height() + self.cam2.height())/2
+        
+
+    class Camera(QWidget):
+        def __init__(self, parent, port):
+            super().__init__()
+
+            self.parent = parent
+
+            self.camera = QLabel()
+            self.camera.setGeometry(0, 0, self.parent.display_width, self.parent.display_height)
+            self.camera.resize(self.parent.display_width, self.parent.display_height)
+            
+            self.camera.setMinimumWidth(self.parent.display_width)
+            self.camera.setMinimumHeight(self.parent.display_height)
+
+            self.layout = QVBoxLayout()
+
+            self.layout.addWidget(self.camera)
+
+            self.setLayout(self.layout)
+
+            self.thread = VideoThread(port)
+            self.thread.change_pixmap_signal.connect(self.update_image)
+            self.thread.start()
+
+
+        def close_event(self, event):
+            self.thread.stop()
+            event.accept()
+
+        @pyqtSlot(ndarray)
+        def update_image(self, cv_img):
+            qt_img = self.convert_cv_qt(cv_img)
+            self.camera.setPixmap(qt_img)
+
+        def convert_cv_qt(self, cv_img):
+            rgb_image = cv2.cvtColor(cv_img, cv2.COLOR_BGR2RGB)
+            h, w, ch = rgb_image.shape
+            bytes_per_line = ch * w
+            convert_to_Qt_format = QImage(rgb_image.data, w, h, bytes_per_line, QImage.Format_RGB888)
+            p = convert_to_Qt_format.scaled(self.parent.display_width, self.parent.display_height, Qt.KeepAspectRatio)
+            return QPixmap.fromImage(p)
+
+
+class VideoThread(QThread):
+    change_pixmap_signal = pyqtSignal(ndarray)
+
     def __init__(self, port):
         super().__init__()
+        self.running = True
+        self.port = port
 
-        self.camera = QCamera(cameras[port])
-        self.camera.setViewfinder(self)
-        self.camera.start()
+    def run(self):
+        self.capture = cv2.VideoCapture(self.port)
+        self.count = 0
+
+        while self.running:
+            self.ret, self.image = self.capture.read()
+
+            if self.ret:
+                self.change_pixmap_signal.emit(self.image)
+
+                k = cv2.waitKey(1)
+                if k%256 == 32:
+                    cv2.imwrite(f'captures/img_{self.count}.png', self.image)
+                    self.count += 1
+
+
+        self.capture.release()
+
+    def stop(self):
+        self.running = False
+        self.wait()
 
 class Camera(QWidget):
     def __init__(self, port):
         super().__init__()
-        self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
 
-        # self.setStyleSheet("""
-        #     QWidget {
-        #         background: rgb(17, 28, 43);
-        #         border-radius: 8px;
-        #         margin: 10px
-        #     }
-        # """)
+        self.display_width = 320
+        self.display_height = 240
 
-        # Defining objects
-        self.camera = RawCamera(port)
-        self.label = QLabel(f'Port {port}')
 
-        self.label.setStyleSheet("""
-            QLabel {
-                color: white;
-                font: bold 30px
-            }
-        """)
+        self.camera = QLabel()
+        self.camera.setGeometry(0, 0, 320, 240)
+        self.camera.resize(self.display_width, self.display_height)
 
-        # Layout
+        self.camera.setMinimumWidth(320)
+        self.camera.setMinimumHeight(240)
+
         self.layout = QVBoxLayout()
-
-        self.layout.addWidget(self.label)
         self.layout.addWidget(self.camera)
 
-
         self.setLayout(self.layout)
+
+        self.camera.resizeEvent = self.camera_resize
+
+        self.thread = VideoThread(port)
+        self.thread.change_pixmap_signal.connect(self.update_image)
+        self.thread.start()
+
+
+    def camera_resize(self, resizeEvent: QResizeEvent):
+        self.display_width, self.display_height = self.camera.width(), self.camera.height()
+
+    def close_event(self, event):
+        self.thread.stop()
+        event.accept()
+
+    @pyqtSlot(ndarray)
+    def update_image(self, cv_img):
+        qt_img = self.convert_cv_qt(cv_img)
+        self.camera.setPixmap(qt_img)
+
+    def convert_cv_qt(self, cv_img):
+        rgb_image = cv2.cvtColor(cv_img, cv2.COLOR_BGR2RGB)
+        h, w, ch = rgb_image.shape
+        bytes_per_line = ch * w
+        convert_to_Qt_format = QImage(rgb_image.data, w, h, bytes_per_line, QImage.Format_RGB888)
+        p = convert_to_Qt_format.scaled(self.display_width, self.display_height, Qt.KeepAspectRatio)
+        return QPixmap.fromImage(p)
+
+
+class VideoThread(QThread):
+    change_pixmap_signal = pyqtSignal(ndarray)
+
+    def __init__(self, port):
+        super().__init__()
+        self.running = True
+        self.port = port
+
+    def run(self):
+        cap = cv2.VideoCapture(self.port)
+
+        while self.running:
+
+            ret, self.image = cap.read()
+            if ret:
+                self.change_pixmap_signal.emit(self.image)
+
+                
+                # cv2.imwrite('img.png', self.image)
+
+        cap.release()
+
+    def stop(self):
+        self.running = False
+        self.wait()
 
 
 class LoggerBox(logging.Handler):
@@ -288,12 +359,6 @@ class Logs(QDialog, QPlainTextEdit):
 
         self.setLayout(self.layout)
 
-        # for _ in range(20):
-        #     logging.debug('why')
-
-        # for _ in range(40):
-        #     sleep(0.7)
-        #     self.update_log('testinfijgwsojdasfpoisjsdafoisjdjsfsais')
 
     def reject(self):
         pass
@@ -315,6 +380,8 @@ class CommandLine(QLineEdit):
         """)
 
         self.setPlaceholderText('"help" for commands')
+        self.setAttribute(Qt.WA_MacShowFocusRect, False) # Mac only
+        self.setFocusPolicy(Qt.ClickFocus | Qt.NoFocus)
 
         self.returnPressed.connect(self.command_event)
 
@@ -324,16 +391,24 @@ class CommandLine(QLineEdit):
         self.clear()
 
         if self.split_text[0] == 'help':
-            logging.info("""
+            logging.info(f"""
 
+                Hotkeys:
+                TAB - shows/hides the tab bar (if styled)
+                t - toggles between styled tabs and regular tabs (styled by default)
+                1 through 5 - switches active tab
+
+
+                Commands:
                 help - shows this menu
                 return (++) - returns text to logs
                 exit - stops the program
 
-                tabs - toggles between styled tabs and regular tabs (styled by default)
-                keys - toggles logging for keyboard presses (off by default)
-                controller - toggles logging for controller (off by default)
+                key - toggles logging for keyboard presses (off by default)
+                controller - toggles logging for controller (off by default) -- remove maybe
 
+
+                Key:
                 "()" = required
                 "[]" = optional
                 "+" = any value
@@ -347,20 +422,11 @@ class CommandLine(QLineEdit):
                 logging.info(' '.join(self.split_text[1:]))
 
         elif self.split_text[0] == 'exit':
+            print('\033[92m\033[1mAzure UI has been stopped sucessfully\033[0m')
             exit()
 
 
-        elif self.split_text[0] == 'tabs':
-            if window.active.tabBar().isVisible():
-                window.active.tabBar().hide()
-                window.frame.layout.insertWidget(0, window.menu)
-            else:
-                window.active.tabBar().show()
-                window.frame.layout.removeWidget(window.menu)
-
-            logging.info('Toggled styled tabs')
-
-        elif self.split_text[0] == 'keys':
+        elif self.split_text[0] == 'key':
             if window.key_logging:
                 window.key_logging = False
             else:
@@ -404,10 +470,6 @@ class LogsTab(QWidget):
         self.layout.setSpacing(0)
 
         self.setLayout(self.layout)
-        # self.setAttribute(Qt.WA_TranslucentBackground)
-
-
-
 
 
 class TabButton(QPushButton):
@@ -435,7 +497,6 @@ class TabButton(QPushButton):
 
 if __name__ == '__main__':
     # Defining global variables/functions
-    cameras = QCameraInfo.availableCameras()
 
     with open('gui/settings.yml', 'r') as f:
         settings_yml = yaml.safe_load(f)

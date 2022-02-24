@@ -1,12 +1,13 @@
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QTabWidget, QGridLayout, QHBoxLayout, \
     QLabel, QPushButton, QPlainTextEdit, QDialog, QVBoxLayout, QPushButton, QLabel, QLineEdit
-from PyQt5.QtCore import Qt, QThread, pyqtSignal
-from PyQt5.QtGui import QTextCursor, QPixmap, QImage
+from PyQt5.QtMultimedia import QCameraInfo, QCamera
+from PyQt5.QtMultimediaWidgets import QCameraViewfinder
+from PyQt5.QtCore import Qt, QTimer, QPropertyAnimation, QPoint, QAbstractAnimation
+from PyQt5.QtGui import QTextCursor, QPixmap
 
 from time import sleep
 
 import sys
-import cv2
 import yaml
 import logging
 
@@ -31,13 +32,8 @@ class AzureUI(QMainWindow):
         # # self.menu.setFixedWidth(300)
 
 
-        # self.frame.layout.addWidget(self.menu)
-        # self.frame.layout.addWidget(self.active)
-        self.testing = CameraThread(0)
-        self.testing.start()
-
-        self.testing_l = QLabel()
-
+        self.frame.layout.addWidget(self.menu)
+        self.frame.layout.addWidget(self.active)
 
         self.frame.layout.setContentsMargins(0,0,0,0)
 
@@ -51,17 +47,49 @@ class AzureUI(QMainWindow):
         # self.animation.setDuration(200)
 
         self.key_logging = False
-    
-    def ImageUpdateSlot(self, image):
-        self.testing_l.setPixmap(QPixmap.fromImage(image))
-
 
     def keyPressEvent(self, e):
-        if e.key() == Qt.Key_H:
+        if e.key() == Qt.Key_Tab:
             if self.menu.isVisible():
+                # self.menu.show()
+                # # self.animation.setDirection(QAbstractAnimation.Forward)
+                # self.animation.setStartValue(QPoint(-260,0))
+                # self.animation.setEndValue(QPoint(0,0))
+                # self.animation.start()
+                # self.animation_state = 0
                 self.menu.hide()
+                
+                
+
             else:
+                # # self.animation = QPropertyAnimation(self.menu, b'pos')
+                # # self.animation.setStartValue(QPoint(0,0))
+                # self.animation.setStartValue(QPoint(0,0))
+                # self.animation.setEndValue(QPoint(-260,0))
+                # # self.animation.setEndValue(QPoint(-260,0))
+                # # self.animation.setDuration(200)
+                # # self.animation.setDirection(QAbstractAnimation.Backward)
+                # self.animation.start()
+                # # self.menu.hide()
+                # self.animation_state = 1
                 self.menu.show()
+
+                # self.animation.finished.connect(lambda: self.menu.hide())
+                # self.animation.stop()
+            # self.update() #######
+            # self.animation_event()
+
+        elif e.key() == Qt.Key_T:
+            if self.active.tabBar().isVisible():
+                self.active.tabBar().hide()
+                self.frame.layout.insertWidget(0, window.menu)
+            else:
+                self.active.tabBar().show()
+                self.frame.layout.removeWidget(window.menu)
+
+            
+
+            logging.info('Toggled styled tabs')
 
         elif e.key() == Qt.Key_1:
             self.active.setCurrentIndex(0)
@@ -73,11 +101,27 @@ class AzureUI(QMainWindow):
             self.active.setCurrentIndex(3)
         elif e.key() == Qt.Key_5:
             self.active.setCurrentIndex(4)
-
         elif self.key_logging and e.text() != chr(13):
             logging.debug(f'Key "{e.text() if e.text().isascii() else None}" pressed')
 
+        ###### update_log((e, e.key()))
+    
+    # def on_anim_closed(self):
+    #     self.menu.hide()
+    #     # self.animation.setStartValue(QPoint(-260,0))
+    #     # self.animation.setEndValue(QPoint(0,0))
+    #     # self.animation.setDuration(200)
 
+    # def anim(self):
+    #     self.menu.show()
+
+    # def animation_event(self):
+    #     if self.animation_state:
+    #         print('no')
+    #     else:
+    #         print('ok')
+
+        
         
 class MenuBar(QWidget):
     def __init__(self, parent):
@@ -88,7 +132,7 @@ class MenuBar(QWidget):
             QWidget {
                 background: rgb(17, 28, 43);
                 border-top-right-radius: 20px;
-                border-bottom-right-radius: 20px;
+                border-bottom-right-radius: 20px
             }
         """)
 
@@ -108,7 +152,7 @@ class MenuBar(QWidget):
         """)
 
         # Tab buttons
-        self.menu_button = TabButton('Menu')
+        self.menu_button = TabButton('Home')
         self.menu_button.clicked.connect(lambda: parent.active.setCurrentIndex(0))
         
         self.grid_button = TabButton('Camera Grid')
@@ -151,20 +195,26 @@ class ActiveTab(QTabWidget):
         super().__init__()
         self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
         
-        self.menu_tab = MenuTab()
+        self.home_tab = HomeTab()
         self.grid_tab = CameraGrid()
         self.cam1_tab = Camera(settings_yml['camera-ports']['cam-1'])
         self.cam2_tab = Camera(settings_yml['camera-ports']['cam-2'])
         self.logs_tab = LogsTab()
 
 
-        self.addTab(self.menu_tab, 'Menu')
+        self.addTab(self.home_tab, 'Home')
         self.addTab(self.grid_tab, 'Camera Grid')
         self.addTab(self.cam1_tab, 'Camera 1')
         self.addTab(self.cam2_tab, 'Camera 2')
         self.addTab(self.logs_tab, 'Logs')
 
         self.setTabPosition(QTabWidget.West)
+
+        # self.setStyleSheet("""
+        #     QTabWidget {
+        #         background: green
+        #     }
+        # """)
 
         self.setDocumentMode(True)
         self.tabBar().hide()
@@ -175,6 +225,7 @@ class CameraGrid(QWidget):
         super().__init__()
 
         self.layout = QHBoxLayout()
+        # self.layout.setSpacing(0)
 
         self.cam1 = Camera(settings_yml['camera-ports']['cam-1'])
         self.cam2 = Camera(settings_yml['camera-ports']['cam-2'])
@@ -185,28 +236,13 @@ class CameraGrid(QWidget):
         self.setLayout(self.layout)
 
 
-class CameraThread(QThread):
+class RawCamera(QCameraViewfinder):
     def __init__(self, port):
         super().__init__()
 
-        self.camera = pyqtSignal(QImage)
-        def run(self):
-            self.active = True
-            self.capture = cv2.VideoCapture(0) # 0 = port
-
-            while self.active:
-                ret, frame = self.capture.read()
-                if ret:
-                    self.image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-                    self.flipped = cv2.flip(self.image, 1)
-
-                    self.convert = QImage(self.flipped.data, self.flipped.shape[1], self.flipped.shape[0], QImage.Format_RGB888)
-                    self.picture = self.convert.scaled(640, 480, Qt.KeepAspectRatio)
-                    self.ImageUpdate.emit(self.picture)
-
-        def stop(self):
-            self.active = False
-            self.stop()
+        self.camera = QCamera(cameras[port])
+        self.camera.setViewfinder(self)
+        self.camera.start()
 
 class Camera(QWidget):
     def __init__(self, port):
@@ -280,7 +316,7 @@ class Logs(QDialog, QPlainTextEdit):
     def reject(self):
         pass
 
-class MenuTab(QWidget):
+class HomeTab(QWidget):
     def __init__(self):
         super().__init__()
 
@@ -297,6 +333,8 @@ class CommandLine(QLineEdit):
         """)
 
         self.setPlaceholderText('"help" for commands')
+        self.setAttribute(Qt.WA_MacShowFocusRect, False) # Mac only
+        self.setFocusPolicy(Qt.ClickFocus | Qt.NoFocus)
 
         self.returnPressed.connect(self.command_event)
 
@@ -306,15 +344,23 @@ class CommandLine(QLineEdit):
         self.clear()
 
         if self.split_text[0] == 'help':
-            logging.info("""
+            logging.info(f"""
+
+                Hotkeys:
+
+                TAB - shows/hides the tab bar (if styled)
+                t - toggles between styled tabs and regular tabs (styled by default)
+                1 through 5 - switches active tab
+
+
+                Commands:
 
                 help - shows this menu
                 return (++) - returns text to logs
                 exit - stops the program
 
-                tabs - toggles between styled tabs and regular tabs (styled by default)
-                keys - toggles logging for keyboard presses (off by default)
-                controller - toggles logging for controller (off by default)
+                key - toggles logging for keyboard presses (off by default)
+                controller - toggles logging for controller (off by default) -- remove maybe
 
                 "()" = required
                 "[]" = optional
@@ -329,20 +375,21 @@ class CommandLine(QLineEdit):
                 logging.info(' '.join(self.split_text[1:]))
 
         elif self.split_text[0] == 'exit':
+            print('\033[92m\033[1mAzure UI has been stopped sucessfully\033[0m')
             exit()
 
 
-        elif self.split_text[0] == 'tabs':
-            if window.active.tabBar().isVisible():
-                window.active.tabBar().hide()
-                window.frame.layout.insertWidget(0, window.menu)
-            else:
-                window.active.tabBar().show()
-                window.frame.layout.removeWidget(window.menu)
+        # elif self.split_text[0] == 'tabs':
+        #     if window.active.tabBar().isVisible():
+        #         window.active.tabBar().hide()
+        #         window.frame.layout.insertWidget(0, window.menu)
+        #     else:
+        #         window.active.tabBar().show()
+        #         window.frame.layout.removeWidget(window.menu)
 
-            logging.info('Toggled styled tabs')
+        #     logging.info('Toggled styled tabs')
 
-        elif self.split_text[0] == 'keys':
+        elif self.split_text[0] == 'key':
             if window.key_logging:
                 window.key_logging = False
             else:
@@ -429,6 +476,6 @@ if __name__ == '__main__':
     window = AzureUI()
     window.show()
 
-    logging.info('Azure UI has loaded sucessfully')
+    logging.debug('Azure UI has loaded sucessfully')
 
     sys.exit(app.exec())

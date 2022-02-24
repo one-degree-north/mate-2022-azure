@@ -1,4 +1,4 @@
-dark-theme: true # maybe later
+left-bar: true
 camera-ports:
-  cam-1: 1
+  cam-1: 0
   cam-2: 0
