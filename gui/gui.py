@@ -10,9 +10,13 @@ import sys
 import yaml
 import logging
 import cv2
+import serial
 
 class AzureUI(QMainWindow):
-    def __init__(self):
+    def __init__(self, port: str, baud_rate: int):
+        self.ser = serial.Serial(self.port, self,baud_rate)
+        self.ser.close()
+        self.ser.open()
         super().__init__()
 
         self.setWindowTitle('Azure UI')
@@ -63,7 +67,29 @@ class AzureUI(QMainWindow):
             self.active.setCurrentIndex(3)
         elif e.key() == Qt.Key_5:
             self.active.setCurrentIndex(4)
-
+            
+        elif e.key() == Qt.Key_W:
+            self.value = self.send_self.value(self.leftJoy_UD)
+            packet_rightThruster = chr(1) + chr(6) + chr(127).encode("latin") + chr(255)
+            self.ser.write(packet_rightThruster)
+            packet_leftThruster = chr(1) + chr(7) + chr(127).encode("latin") + chr(255)
+            self.ser.write(packet_leftThruster)
+        elif e.key() == Qt.Key_S:
+            self.value = self.send_self.value(self.leftJoy_UD)
+            packet_rightThruster = chr(1) + chr(6) + chr(128).encode("latin") + chr(255)
+            self.ser.write(packet_rightThruster)
+            packet_leftThruster = chr(1) + chr(7) + chr(128).encode("latin") + chr(255)
+            self.ser.write(packet_leftThruster)     
+        elif e.key() == Qt.Key_A:
+            packet_rightThruster = chr(1) + chr(6) + chr(128).encode("latin") + chr(255)
+            self.ser.write(packet_rightThruster)
+            packet_leftThruster = chr(1) + chr(7) + chr(127).encode("latin") + chr(255)
+            self.ser.write(packet_leftThruster)
+        elif e.key() == Qt.Key_D:
+            packet_rightThruster = chr(1) + chr(6) + chr(127).encode("latin") + chr(255)
+            self.ser.write(packet_rightThruster)
+            packet_leftThruster = chr(1) + chr(7) + chr(128).encode("latin") + chr(255)
+            self.ser.write(packet_leftThruster)
         elif self.key_logging and e.text() != chr(13):
             logging.debug(f'Key "{e.text() if e.text().isascii() else None}" pressed')
         
