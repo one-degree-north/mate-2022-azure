@@ -87,6 +87,11 @@ void loop() {
           motBR.writeMicroseconds(1000);
           motBL.writeMicroseconds(1000);
         }
+        else if (m == 0){
+          motFR.writeMicroseconds(1500);
+          motFL.writeMicroseconds(1500);
+          motBR.writeMicroseconds(1500);
+          motBL.writeMicroseconds(1500);
       }
     }
   }
