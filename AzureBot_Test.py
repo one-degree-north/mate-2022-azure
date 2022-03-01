@@ -1,7 +1,6 @@
 from threading import Thread
 import serial
 import controls
-import gui
 import struct
 
 maxCoordinates = 100
@@ -10,7 +9,7 @@ class Comms:
     def __init__(self, port: str, baud_rate: int):
         self.port = port
         self.baud_rate = baud_rate
-        ser = serial.Serial(self.port, self,baud_rate)
+        self.ser = serial.Serial(self.port, self,baud_rate)
         self.ser.close()
         self.ser.open()
 
@@ -37,32 +36,42 @@ class Comms:
             if (self.leftJoy_UD[1] > 0.5*maxCoordinates):
                 #joystick has been moved up; tell both thrusters to move forward 
                 self.value = self.send_self.value(self.leftJoy_UD)
-                packet_rightThruster = chr(1) + chr(6) + chr((self.value).encode("latin")) + chr(255)
+                self.convert_value = (self.value).encode("latin")
+                packet_rightThruster = chr(1) + chr(6) + chr(self.convert_value) + chr(255)
                 self.ser.write(packet_rightThruster)
-                packet_leftThruster = chr(1) + chr(7) + chr((self.value).encode("latin")) + chr(255)
+                packet_leftThruster = chr(1) + chr(7) + chr(self.convert_value) + chr(255)
                 self.ser.write(packet_leftThruster)
             elif (self.leftJoy_UD[1] < 0.5*maxCoordinates):
-                    self.value = self.send_value(self.leftJoy_UD)
-                    packet_rightThrus = chr(1) + chr(6) + chr((self.value).encode("latin")) + chr(255) 
-                    self.ser.write(packet_rightThrus)
-                    packet_leftThurs = chr(1) + chr(7) + chr((self.value).encode("latin")) + chr(255) 
-                    self.ser.write(packet_leftThurs)
+                self.value = self.send_value(self.leftJoy_UD)
+                self.convert_value = (self.value).encode("latin")
+                packet_rightThrus = chr(1) + chr(6) + chr(self.convert_value) + chr(255) 
+                self.ser.write(packet_rightThrus)
+                packet_leftThurs = chr(1) + chr(7) + chr(self.convert_value) + chr(255) 
+                self.ser.write(packet_leftThurs)
             #have to specify to elimate packets being sent when joystick is at (0,0)
 
             #coding left and right movement
             if (self.rightJoy_LR[0] > 0.5*maxCoordinates):
-                #joystick has been moved to the right
-                self.value = self.send_value(self.leftJoy_UD)
-                packet_rightThruster = chr(1) + chr(6) + chr((self.value).encode("latin")) + chr(255)
-                self.ser.write(packet_rightThruster)
-                packet_leftThruster = chr(1) + chr(7) + chr((self.value).encode("latin")) + chr(255)
+                #joystick has been moved to the right - code left thruster to move
+                self.value_leftMot = self.send_value(self.rightJoy_LR)
+                self.convert_value_leftMot = (self.value_leftMot).encode("latin")
+                packet_leftThruster = chr(1) + chr(6) + chr(self.convert_value_leftMot) + chr(255)
                 self.ser.write(packet_leftThruster)
-            elif (self.rightJoy_LR[0] < 0.5*maxCoordinates):
-                #joystick has been moved to the left
-                self.value = self.send_value(self.leftJoy_UD)
-                packet_rightThruster = chr(1) + chr(6) + chr((self.value).encode("latin")) + chr(255)
+                #right thruster going the other way
+                self.value_rightMot = self.send_value(-self.rightJoy_LR)
+                self.convert_value_rightMot = (self.value_rightMot).encode("latin")
+                packet_rightThruster = chr(1) + chr(7) + chr(self.convert_value_rightJoy_UD) + chr(255)
                 self.ser.write(packet_rightThruster)
-                packet_leftThruster = chr(1) + chr(7) + chr((self.value).encode("latin")) + chr(255)
+            elif (self.rightJoy_LR[0] < 0.5*maxCoordinates):
+                #joystick has been moved to the left - code right thruster to move
+                self.value_rightMot = self.send_value(self.rightJoy_LR)
+                self.convert_value_rightMot = (self.value_rightMot).encode("latin")
+                packet_rightThruster = chr(1) + chr(6) + chr(self.convert_value_rightMot) + chr(255)
+                self.ser.write(packet_rightThruster)
+                #left thruster goes the other way
+                self.value_leftMot = self.send_value(-self.rightJoy_LR)
+                self.convert_value_rightMot = (self.value_leftMot).encode("latin")
+                packet_leftThruster = chr(1) + chr(7) + chr(self.convert_value_rightMot) + chr(255)
                 self.ser.write(packet_leftThruster)
 
             '''
@@ -122,5 +131,3 @@ class Comms:
     def start_thread(self):
         start_thread = self.threading.Thread(target = self.run)  
         start_thread.start()
-    
-    #display_GUI = gui.GUI()
