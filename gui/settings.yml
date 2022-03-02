@@ -1,4 +1,2 @@
 left-bar: true
-camera-ports:
-  cam-1: 0
-  cam-2: 0
+camera-port: 0

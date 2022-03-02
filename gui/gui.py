@@ -4,7 +4,7 @@ from PyQt5.QtCore import Qt, QTimer, QPropertyAnimation, QPoint, QAbstractAnimat
 from PyQt5.QtGui import QTextCursor, QPixmap, QImage, QResizeEvent
 
 from numpy import ndarray
-from datetime import datetime
+# from datetime import datetime
 
 import sys
 import yaml
@@ -35,6 +35,8 @@ class AzureUI(QMainWindow):
 
         self.key_logging = False
 
+        self.resize(800, 600)
+
     def keyPressEvent(self, e):
         if e.key() == Qt.Key_Tab:
             if self.menu.isVisible():
@@ -59,10 +61,6 @@ class AzureUI(QMainWindow):
             self.active.setCurrentIndex(1)
         elif e.key() == Qt.Key_3:
             self.active.setCurrentIndex(2)
-        elif e.key() == Qt.Key_4:
-            self.active.setCurrentIndex(3)
-        elif e.key() == Qt.Key_5:
-            self.active.setCurrentIndex(4)
 
         elif self.key_logging and e.text() != chr(13):
             logging.debug(f'Key "{e.text() if e.text().isascii() else None}" pressed')
@@ -99,27 +97,19 @@ class MenuBar(QWidget):
         # Tab buttons
         self.menu_button = TabButton('Menu')
         self.menu_button.clicked.connect(lambda: parent.active.setCurrentIndex(0))
-        
-        self.grid_button = TabButton('Camera Grid')
-        self.grid_button.clicked.connect(lambda: parent.active.setCurrentIndex(1))
 
-        self.cam1_button = TabButton('Camera 1')
-        self.cam1_button.clicked.connect(lambda: parent.active.setCurrentIndex(2))
-
-        self.cam2_button = TabButton('Camera 2')
-        self.cam2_button.clicked.connect(lambda: parent.active.setCurrentIndex(3))
+        self.cam_button = TabButton('Camera')
+        self.cam_button.clicked.connect(lambda: parent.active.setCurrentIndex(1))
 
         self.logs_button = TabButton('Logs')
-        self.logs_button.clicked.connect(lambda: parent.active.setCurrentIndex(4))
+        self.logs_button.clicked.connect(lambda: parent.active.setCurrentIndex(2))
 
         # Tab layout
         self.tabs = QWidget()
         self.tabs.layout = QVBoxLayout()
 
         self.tabs.layout.addWidget(self.menu_button)
-        self.tabs.layout.addWidget(self.grid_button)
-        self.tabs.layout.addWidget(self.cam1_button)
-        self.tabs.layout.addWidget(self.cam2_button)
+        self.tabs.layout.addWidget(self.cam_button)
         self.tabs.layout.addWidget(self.logs_button)
 
         self.tabs.setLayout(self.tabs.layout)
@@ -141,89 +131,18 @@ class ActiveTab(QTabWidget):
         self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
         
         self.menu_tab = MenuTab()
-        self.grid_tab = CameraGrid()
-        self.cam1_tab = Camera(settings_yml['camera-ports']['cam-1'])
-        self.cam2_tab = Camera(settings_yml['camera-ports']['cam-2'])
+        self.cam_tab = Camera(settings_yml['camera-port'])
         self.logs_tab = LogsTab()
 
 
         self.addTab(self.menu_tab, 'Menu')
-        self.addTab(self.grid_tab, 'Camera Grid')
-        self.addTab(self.cam1_tab, 'Camera 1')
-        self.addTab(self.cam2_tab, 'Camera 2')
+        self.addTab(self.cam_tab, 'Camera')
         self.addTab(self.logs_tab, 'Logs')
 
         self.setTabPosition(QTabWidget.West)
 
         self.setDocumentMode(True)
         self.tabBar().hide()
-
-
-class CameraGrid(QWidget):
-    def __init__(self):
-        super().__init__()
-        self.layout = QHBoxLayout()
-        self.layout.setSpacing(0)
-
-        self.display_width = 320
-        self.display_height = 240
-
-
-        self.cam1 = self.Camera(self, settings_yml['camera-ports']['cam-1'])
-        self.cam2 = self.Camera(self, settings_yml['camera-ports']['cam-2'])
-
-
-        self.layout.addWidget(self.cam1)
-        self.layout.addWidget(self.cam2)
-
-        self.setLayout(self.layout)
-
-        self.resizeEvent = self.camera_resize
-
-    def camera_resize(self, resizeEvent: QResizeEvent):
-        self.display_width, self.display_height = (self.cam1.width() + self.cam2.width())/2, (self.cam1.height() + self.cam2.height())/2
-        
-
-    class Camera(QWidget):
-        def __init__(self, parent, port):
-            super().__init__()
-
-            self.parent = parent
-
-            self.camera = QLabel()
-            self.camera.setGeometry(0, 0, self.parent.display_width, self.parent.display_height)
-            self.camera.resize(self.parent.display_width, self.parent.display_height)
-            
-            self.camera.setMinimumWidth(self.parent.display_width)
-            self.camera.setMinimumHeight(self.parent.display_height)
-
-            self.layout = QVBoxLayout()
-
-            self.layout.addWidget(self.camera)
-
-            self.setLayout(self.layout)
-
-            self.thread = VideoThread(port)
-            self.thread.change_pixmap_signal.connect(self.update_image)
-            self.thread.start()
-
-
-        def close_event(self, event):
-            self.thread.stop()
-            event.accept()
-
-        @pyqtSlot(ndarray)
-        def update_image(self, cv_img):
-            qt_img = self.convert_cv_qt(cv_img)
-            self.camera.setPixmap(qt_img)
-
-        def convert_cv_qt(self, cv_img):
-            rgb_image = cv2.cvtColor(cv_img, cv2.COLOR_BGR2RGB)
-            h, w, ch = rgb_image.shape
-            bytes_per_line = ch * w
-            convert_to_Qt_format = QImage(rgb_image.data, w, h, bytes_per_line, QImage.Format_RGB888)
-            p = convert_to_Qt_format.scaled(int(self.parent.display_width), int(self.parent.display_height), Qt.KeepAspectRatio)
-            return QPixmap.fromImage(p)
 
 
 class VideoThread(QThread):
@@ -304,33 +223,6 @@ class Camera(QWidget):
         return QPixmap.fromImage(p)
 
 
-class VideoThread(QThread):
-    change_pixmap_signal = pyqtSignal(ndarray)
-
-    def __init__(self, port):
-        super().__init__()
-        self.running = True
-        self.port = port
-
-    def run(self):
-        cap = cv2.VideoCapture(self.port)
-
-        while self.running:
-
-            ret, self.image = cap.read()
-            if ret:
-                self.change_pixmap_signal.emit(self.image)
-
-                
-                # cv2.imwrite('img.png', self.image)
-
-        cap.release()
-
-    def stop(self):
-        self.running = False
-        self.wait()
-
-
 class LoggerBox(logging.Handler):
     def __init__(self, parent):
         super().__init__()
@@ -348,7 +240,7 @@ class Logs(QDialog, QPlainTextEdit):
         super().__init__()
 
         self.logger = LoggerBox(self)
-        self.logger.setFormatter(logging.Formatter('[%(asctime)s] [%(levelname)s] %(message)s', '%H:%M:%S')) #LOGGING TYPE
+        self.logger.setFormatter(logging.Formatter('[%(asctime)s] [%(levelname)s] %(message)s', '%H:%M:%S'))
 
         logging.getLogger().addHandler(self.logger)
         logging.getLogger().setLevel(logging.DEBUG)
