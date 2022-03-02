@@ -1,6 +1,8 @@
 from PyQt5.QtWidgets import QVBoxLayout, QWidget, QPushButton, QLabel
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtGui import QImage, QPixmap
+
+import cv2
 
 class MenuBar(QWidget):
     def __init__(self, parent):
@@ -16,15 +18,14 @@ class MenuBar(QWidget):
         """)
 
         # Image
-        self.image = QLabel()
-        self.pixmap = QPixmap('gui/odn-logo.png')
-        self.pixmap.scaled(1, 1, Qt.KeepAspectRatio)
+        self.image = cv2.imread('gui/odn-logo.png', cv2.IMREAD_UNCHANGED)
+        self.image = QImage(self.image.data, self.image.shape[1], self.image.shape[0], QImage.Format_ARGB32)
 
-        self.image.setFixedSize(230, 260)
+        
+        self.image_frame = QLabel()
+        self.image_frame.setPixmap(QPixmap.fromImage(self.image))
 
-        self.image.setPixmap(self.pixmap)
-        self.image.setAlignment(Qt.AlignHCenter)
-        self.image.setStyleSheet("""
+        self.image_frame.setStyleSheet("""
             QWidget {
                 padding: 10px
             }
@@ -54,7 +55,7 @@ class MenuBar(QWidget):
         # Bar layout
         self.layout = QVBoxLayout()
 
-        self.layout.addWidget(self.image)
+        self.layout.addWidget(self.image_frame)
         self.layout.addStretch()
         self.layout.addWidget(self.tabs)
 
