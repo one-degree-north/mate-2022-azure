@@ -96,7 +96,8 @@ class Comms:
                     packet_rightJoy = chr(1) + chr(6) + chr((self.value).encode("latin")) + chr(255) 
                     self.ser.write(packet_rightJoy) '''
 
-                #servo claw code - finalized with packet value. chr(11) tells systems to switch off the servo and chr(12) is an empty byte
+                #servo claw code - finalized with packet value. 
+                #chr(11) tells systems to switch off the servo and chr(12) tells to switch on
             if (self.servoRotate == True):
                 self.value = self.send_value(self.servoRotate)
                 packet_servoRotate = chr(1) + chr(8) + chr(12) + chr(255)
@@ -113,15 +114,13 @@ class Comms:
                 packet_servoGrab_off = chr(1) + chr(9) + chr(11) + chr(255)
                 self.ser.write(packet_servoGrab_off)
 
-            #[-127,127]
-
             #4 up and down motors 
             if (self.LB_up == True):
                 packet_LB_up = chr(1) + chr(13) + chr(127) + chr(255)
                 self.ser.write(packet_LB_up)
             elif (self.RB_up == True):
-                    packet_RB_up = chr(1) + chr(13) + chr(254) + chr(255)
-                    self.ser.write(packet_RB_up)
+                packet_RB_up = chr(1) + chr(13) + chr(254) + chr(255)
+                self.ser.write(packet_RB_up)
             #systems will read chr(13) and turn all 4 up-down motors up, and the chr(14) will turn them all down.
 
             #to recieve the gyroscope information from systems
