@@ -69,7 +69,7 @@ class CommandLine(QLineEdit):
                 Hotkeys:
                 TAB - shows/hides the tab bar (if styled)
                 t - toggles between styled tabs and regular tabs (styled by default)
-                1 through 5 - switches active tab
+                1 through 3 - switches active tab
 
 
                 Commands:
@@ -95,7 +95,7 @@ class CommandLine(QLineEdit):
                 logging.info(' '.join(self.split_text[1:]))
 
         elif self.split_text[0] == 'exit':
-            print('\033[93m\033[1mAzure UI has been stopped sucessfully\033[0m')
+            print('\033[93m\033[1mAzure UI has stopped sucessfully\033[0m')
             exit()
 
 
@@ -145,3 +145,7 @@ class LogsTab(QWidget):
         self.layout.setSpacing(0)
 
         self.setLayout(self.layout)
+
+    # def keyPressEvent(self, e):
+    #     if e.key() == Qt.Key_C:
+    #         logging.info('ok')

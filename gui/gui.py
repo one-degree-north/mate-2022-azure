@@ -5,7 +5,9 @@ from menu import MenuBar
 from active import ActiveTab
 
 import sys
+import cv2
 import logging
+from datetime import datetime
 
 class AzureUI(QMainWindow):
     def __init__(self):
@@ -57,6 +59,16 @@ class AzureUI(QMainWindow):
             self.active.setCurrentIndex(1)
         elif e.key() == Qt.Key_3:
             self.active.setCurrentIndex(2)
+
+        elif e.key() == Qt.Key_Space:# and len(self.active.cam_tab.image):
+
+            # if self.active.cam_tab.image
+            # logging.info(self.active.cam_tab.image)
+
+            file_name = f'captures/{datetime.now().strftime("%d-%m-%Y_%H:%M:%S")}.png'
+            cv2.imwrite(file_name, self.active.cam_tab.image)
+
+            logging.info(f'Image captured as {file_name}')
 
         elif self.active.logs_tab.textbox.key_logging and e.text() != chr(13):
             logging.debug(f'Key "{e.text() if e.text().isascii() else None}" pressed')
