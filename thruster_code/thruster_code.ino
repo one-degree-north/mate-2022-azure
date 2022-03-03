@@ -66,14 +66,6 @@ void loop() {
       else if (motor == 7){
         motL.writeMicroseconds(m);
       }
-      else if (motor == 11){
-        motFR.writeMicroseconds(1500);
-        motFL.writeMicroseconds(1500);
-        motBR.writeMicroseconds(1500);
-        motBL.writeMicroseconds(1500);
-        motR.writeMicroseconds(1500);
-        motL.writeMicroseconds(1500);
-      }
       else if (motor == 13){
         if (m == 127){
           motFR.writeMicroseconds(2000);
