@@ -1,7 +1,9 @@
-*.mp4
 testing
 saves
 
 __pycache__
 *.pyc
 .DS_STORE
+
+# Does not upload captures to GitHub
+captures

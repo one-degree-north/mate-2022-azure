@@ -5,6 +5,8 @@ from menu import MenuBar
 from active import ActiveTab
 
 import sys
+import os
+
 import cv2
 import logging
 from datetime import datetime
@@ -65,7 +67,7 @@ class AzureUI(QMainWindow):
             # if self.active.cam_tab.image
             # logging.info(self.active.cam_tab.image)
 
-            file_name = f'captures/{datetime.now().strftime("%d-%m-%Y_%H:%M:%S")}.png'
+            file_name = f'captures/{datetime.now().strftime("cap_%H:%M:%S")}.png'
             cv2.imwrite(file_name, self.active.cam_tab.image)
 
             logging.info(f'Image captured as {file_name}')
@@ -76,6 +78,12 @@ class AzureUI(QMainWindow):
 
 
 if __name__ == '__main__':
+    # Create "captures" directory
+    try:
+        os.makedirs('captures')
+    except FileExistsError:
+        pass
+
     # Create UI application
     app = QApplication([])
 
