@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QGridLayout, QVBoxLayout, QWidget, QPlainTextEdit, QDialog, QLineEdit
+from PyQt5.QtWidgets import QGridLayout, QVBoxLayout, QWidget, QPlainTextEdit, QDialog, QLineEdit, QLabel
 from PyQt5.QtCore import Qt
 
 import logging
@@ -32,9 +32,14 @@ class Logs(QDialog, QPlainTextEdit):
 
         self.setLayout(self.layout)
 
-
     def reject(self):
         pass
+
+    # def keyPressEvent(self, e):
+    #     if e.key() == Qt.Key_Tab:
+    #         return True
+    #     else:
+    #         self.event(self, e)
 
 
 
@@ -69,6 +74,7 @@ class CommandLine(QLineEdit):
                 Hotkeys:
                 TAB - shows/hides the tab bar (if styled)
                 t - toggles between styled tabs and regular tabs (styled by default)
+                l - shows mini-logs in tab bar (styled menu only)
                 1 through 3 - switches active tab
 
 
@@ -121,7 +127,6 @@ class LogsTab(QWidget):
     def __init__(self):
         super().__init__()
 
-
         self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
 
         self.setStyleSheet("""
@@ -146,6 +151,19 @@ class LogsTab(QWidget):
 
         self.setLayout(self.layout)
 
-    # def keyPressEvent(self, e):
-    #     if e.key() == Qt.Key_C:
-    #         logging.info('ok')
+
+class MiniLogsWindow(Logs):
+    def __init__(self):
+        super().__init__()
+
+        self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
+
+        self.setStyleSheet("""
+            QWidget {
+                background: rgb(255, 255, 255);
+                border-radius: 10px;
+                margin: 20px
+            }
+        """)
+
+        

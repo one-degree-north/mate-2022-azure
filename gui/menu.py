@@ -2,6 +2,8 @@ from PyQt5.QtWidgets import QVBoxLayout, QWidget, QPushButton, QLabel
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QImage, QPixmap
 
+from tabs.logs import MiniLogsWindow
+
 import cv2
 
 class MenuBar(QWidget):
@@ -17,6 +19,8 @@ class MenuBar(QWidget):
             }
         """)
 
+        self.setFixedWidth(280)
+
         # Image
         self.image = cv2.imread('gui/odn-logo.png', cv2.IMREAD_UNCHANGED)
         self.image = QImage(self.image.data, self.image.shape[1], self.image.shape[0], QImage.Format_ARGB32)
@@ -30,6 +34,12 @@ class MenuBar(QWidget):
                 padding: 10px
             }
         """)
+
+        self.image_frame.setAlignment(Qt.AlignCenter)
+
+        # Mini logs
+        self.logs = MiniLogsWindow()
+
 
         # Tab buttons
         self.menu_button = TabButton('Menu')
@@ -57,6 +67,7 @@ class MenuBar(QWidget):
 
         self.layout.addWidget(self.image_frame)
         self.layout.addStretch()
+        self.layout.addWidget(self.logs)
         self.layout.addWidget(self.tabs)
 
         self.setLayout(self.layout)

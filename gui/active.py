@@ -26,6 +26,7 @@ class ActiveTab(QTabWidget):
         self.setDocumentMode(True)
         self.tabBar().hide()
 
+
 # Defining global variable(s)
 with open('gui/settings.yml', 'r') as f:
     settings_yml = yaml.safe_load(f)

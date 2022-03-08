@@ -3,9 +3,6 @@ from PyQt5.QtCore import Qt, QThread, pyqtSignal, pyqtSlot
 from PyQt5.QtGui import QImage, QPixmap, QTextCursor, QResizeEvent
 
 from numpy import ndarray
-# from datetime import datetime
-
-# print(datetime.now().strftime('%d/%m/%Y_%H:%M:%S'))
 
 import cv2
 import logging
@@ -28,17 +25,6 @@ class VideoThread(QThread):
 
             if ret:
                 self.change_pixmap_signal.emit(self.parent.image)
-
-                # k = cv2.waitKey(1)
-                # # print(k)
-                # if k%256 == 32:
-                #     # cv2.imwrite(f'captures/img_{self.count}.png', self.image)
-                # #     # self.count += 1
-                    
-                #     print("1")
-                # # print(0)
-            # print(self.count)
-
 
         self.capture.release()
 
@@ -68,17 +54,11 @@ class Camera(QWidget):
 
         self.camera.resizeEvent = self.camera_resize ### thread
 
-        self.image = ndarray(0)
-        print(self.image)
+        self.image = None
 
         self.thread = VideoThread(self, port)
         self.thread.change_pixmap_signal.connect(self.update_image)
         self.thread.start()
-
-    # def keyPressEvent(self, e):
-    #     if e.key() == Qt.Key_E:
-    #         logging.info('e press')
-    #         print('e press')
 
     def camera_resize(self, resizeEvent: QResizeEvent):
         self.display_width, self.display_height = self.camera.width(), self.camera.height()

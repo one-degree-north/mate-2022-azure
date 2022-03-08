@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QVBoxLayout, QWidget, QPushButton, QLabel
+from PyQt5.QtWidgets import QVBoxLayout, QHBoxLayout, QWidget, QPushButton, QLabel
 from PyQt5.QtCore import Qt
 
 
@@ -7,6 +7,8 @@ class HomeTab(QWidget):
         super().__init__()
 
         # Title
+        # self.frame = QWidget()
+
         self.title = QLabel('MATE Azure User Interface')
         self.title.setStyleSheet("""
             QLabel {
@@ -15,19 +17,41 @@ class HomeTab(QWidget):
             }
         """)
 
-        self.title.setAlignment(Qt.AlignTop)
+        # Control Bar
+        self.control_layout = QWidget()
+        
+        self.control_layout.layout = QHBoxLayout()
+
+        self.control_bar = QWidget()
+
+        self.control_bar.setStyleSheet("""
+            QWidget {
+                background: rgb(0, 0, 0)
+            }
+        """)
+        
+        self.control_bar.setFixedSize(200,20)
+
+        self.control_layout.layout.addWidget(self.control_bar)
+        # self.control_layout.layout.setLayout(self.control_layout)
+
+        ####### shift as killswitch and button on menu
 
         # Exit
         self.exit = Button('ok')
 
         self.layout = QVBoxLayout()
+
         self.layout.addWidget(self.title)
-        self.layout.addWidget(BottomBar())
-        self.layout.addWidget(Button('ok'))
+        self.layout.addStretch()
+        self.layout.addWidget(self.control_layout)
+        # self.layout.addWidget(Button('ok'))
+
+        self.layout.setAlignment(Qt.AlignRight)
 
         self.setLayout(self.layout)
 
-class BottomBar(QWidget):
+class ControlBar(QWidget):
     def __init__(self):
         super().__init__()
         self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
