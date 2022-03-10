@@ -48,7 +48,7 @@ class MenuBar(QWidget):
         self.cam_button = TabButton('Camera')
         self.cam_button.clicked.connect(lambda: parent.active.setCurrentIndex(1))
 
-        self.logs_button = TabButton('Logs')
+        self.logs_button = TabButton('Console')
         self.logs_button.clicked.connect(lambda: parent.active.setCurrentIndex(2))
 
         # Tab layout

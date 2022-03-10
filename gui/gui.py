@@ -35,12 +35,10 @@ class AzureUI(QMainWindow):
 
         self.menu.logs.hide()
 
-        self.key_logging = False
-
         self.resize(800, 600)
 
     def keyPressEvent(self, e):
-        if e.key() == Qt.Key_Tab:
+        if e.key() == Qt.Key_QuoteLeft:
             if self.menu.isVisible():
                 self.menu.hide()
             else:
@@ -64,25 +62,24 @@ class AzureUI(QMainWindow):
             self.active.setCurrentIndex(2)
 
         elif e.key() == Qt.Key_L:
-            # print()
-            if self.menu.logs.isVisible():# and self.active.currentIndex() != 2:
+            if self.menu.logs.isVisible():
                 self.menu.logs.hide()
             else:
                 self.menu.logs.show()
 
-        elif e.key() == Qt.Key_Space:# and len(self.active.cam_tab.image):
+        elif e.key() == Qt.Key_C:
             try:
-                file_name = f'captures/{datetime.now().strftime("%d-%m-%y_%H:%M:%S")}.png'
+                file_name = f'captures/{datetime.now().strftime(f"%d-%m-%y_%H:%M:%S.%f")[:-4]}.png'
                 cv2.imwrite(file_name, self.active.cam_tab.image)
 
                 logging.info(f'Image captured as {file_name}')
 
             except cv2.error:
-                logging.error('Camera has not yet loaded; please try again')
+                logging.error('Camera has not yet loaded; please wait')
 
-        elif self.active.logs_tab.textbox.key_logging and e.text() != chr(13):
+        elif self.active.console_tab.textbox.key_logging and e.text() != chr(13):
             logging.debug(f'Key "{e.text() if e.text().isascii() else None}" pressed')
-        
+
 
 
 if __name__ == '__main__':
@@ -102,7 +99,8 @@ if __name__ == '__main__':
         pass
 
     logging.info('Azure UI has loaded sucessfully')
-    logging.info('Captures are saved as "d-m-y_H:M:S"')
     print('\033[92m\033[1mAzure UI has loaded sucessfully\033[0m')
+
+    logging.info('Captures are saved in the following format: "D-M-Y_H:M:S"')
 
     sys.exit(app.exec())

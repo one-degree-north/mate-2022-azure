@@ -123,7 +123,7 @@ class CommandLine(QLineEdit):
         else:
             logging.error(f'Command "{self.split_text[0]}" does not exist')
 
-class LogsTab(QWidget):
+class ConsoleTab(QWidget):
     def __init__(self):
         super().__init__()
 

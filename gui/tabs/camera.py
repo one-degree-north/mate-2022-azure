@@ -52,7 +52,7 @@ class Camera(QWidget):
 
         self.setLayout(self.layout)
 
-        self.camera.resizeEvent = self.camera_resize ### thread
+        self.camera.resizeEvent = self.camera_resize
 
         self.image = None
 

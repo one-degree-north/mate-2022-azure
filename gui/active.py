@@ -3,7 +3,7 @@ from PyQt5.QtCore import Qt
 
 from tabs.home import HomeTab
 from tabs.camera import Camera 
-from tabs.logs import LogsTab 
+from tabs.logs import ConsoleTab 
 
 import yaml
 
@@ -13,13 +13,13 @@ class ActiveTab(QTabWidget):
         self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
         
         self.home_tab = HomeTab()
-        self.cam_tab = Camera(settings_yml['camera-port'])
-        self.logs_tab = LogsTab()
+        self.cam_tab = Camera(port)
+        self.console_tab = ConsoleTab()
 
 
         self.addTab(self.home_tab, 'Menu')
         self.addTab(self.cam_tab, 'Camera')
-        self.addTab(self.logs_tab, 'Logs')
+        self.addTab(self.console_tab, 'Console')
 
         self.setTabPosition(QTabWidget.West)
 
@@ -29,4 +29,4 @@ class ActiveTab(QTabWidget):
 
 # Defining global variable(s)
 with open('gui/settings.yml', 'r') as f:
-    settings_yml = yaml.safe_load(f)
+    port = yaml.safe_load(f)['camera-port']
