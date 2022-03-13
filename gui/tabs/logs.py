@@ -72,10 +72,11 @@ class CommandLine(QLineEdit):
             logging.info(f"""
 
                 Hotkeys:
-                TAB - shows/hides the tab bar (if styled)
+                ` - shows/hides the tab bar (if styled)
                 t - toggles between styled tabs and regular tabs (styled by default)
                 l - shows mini-logs in tab bar (styled menu only)
                 1 through 3 - switches active tab
+                c - capture a screenshot
 
 
                 Commands:
@@ -84,7 +85,6 @@ class CommandLine(QLineEdit):
                 exit - stops the program
 
                 key - toggles logging for keyboard presses (off by default)
-                controller - toggles logging for controller (off by default) -- remove maybe
 
 
                 Key:
@@ -114,11 +114,11 @@ class CommandLine(QLineEdit):
             logging.info('Toggled key logging')
 
 
-        elif self.split_text[0] == 'ping':
-            pass # ping to robot (maybe)
+        # elif self.split_text[0] == 'ping':
+        #     pass
         
-        elif self.split_text[0] == 'clear':
-            pass # clear logs
+        # elif self.split_text[0] == 'clear':
+        #     pass
         
         else:
             logging.error(f'Command "{self.split_text[0]}" does not exist')
