@@ -64,7 +64,7 @@ class Controller:
 
         dpad_pos = (self.center[0] - 50, self.center[1] + 20)
 
-               back_button_pos = (self.center[0] - 20, self.center[1] - 20)
+        back_button_pos = (self.center[0] - 20, self.center[1] - 20)
 
         start_button_pos = (self.center[0] + 20, self.center[1] - 20)
 
@@ -100,20 +100,12 @@ while 1:
             if event.trigger == LEFT:
                 l_trigger_index_pos = (controller.l_trigger_pos[0], controller.l_trigger_pos[1] - 20 + int(round(40 * event.value, 0)))
                 print("Robot goes down")
-           elif event.trigger == RIGHT:
+            elif event.trigger == RIGHT:
                 r_trigger_index_pos = (controller.r_trigger_pos[0], controller.r_trigger_pos[1] - 20 + int(round(40 * event.value, 0)))
                 print("Robot goes up")
-        elif event.type == EVENT_BUTTON_PRESSED:
-            if event.button == "LEFT_THUMB":
-                
-            elif event.button == "RIGHT_THUMB":
-                
-            elif event.button == "LEFT_SHOULDER":
-                
-            elif event.button == "RIGHT_SHOULDER":
-                
+        elif event.type == EVENT_BUTTON_PRESSED:                
 
-            elif event.button == "DPAD_LEFT":
+            if event.button == "DPAD_LEFT":
                 print("Switch to Camera 2")
             elif event.button == "DPAD_RIGHT":
                 print("Switch to Camera 3")
@@ -124,31 +116,14 @@ while 1:
 
             elif event.button == "A":
                 print("Claw grabs")
-            elif event.button == "B":
-                
-            elif event.button == "Y":
                 
             elif event.button == "X":
                 print("Take picture")
                 
 
-        elif event.type == EVENT_BUTTON_RELEASED:
-            if event.button == "LEFT_THUMB":
-                
-            elif event.button == "RIGHT_THUMB":
-                
+        elif event.type == EVENT_BUTTON_RELEASED:                
 
-            elif event.button == "LEFT_SHOULDER":
-                
-            elif event.button == "RIGHT_SHOULDER":
-                
-
-            elif event.button == "BACK":
-                
-            elif event.button == "START":
-                
-
-            elif event.button == "DPAD_LEFT":
+            if event.button == "DPAD_LEFT":
                 print("Remain on Camera 2")
             elif event.button == "DPAD_RIGHT":
                 print("Remain on Camera 3")
@@ -160,9 +135,6 @@ while 1:
 
             elif event.button == "A":
                 print("Claw release")                
-            elif event.button == "B":
-                
-            elif event.button == "Y":
                 
             elif event.button == "X":
                 print("Stop taking pictures")
