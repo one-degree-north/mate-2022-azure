@@ -114,13 +114,13 @@ while 1:
                 
 
             elif event.button == "DPAD_LEFT":
-                
+                print("Switch to Camera 2")
             elif event.button == "DPAD_RIGHT":
-                
+                print("Switch to Camera 3")
             elif event.button == "DPAD_UP":
-                
+                print("Switch to Camera 1")
             elif event.button == "DPAD_DOWN":
-                
+                print("Switch to Camera 4")
 
             elif event.button == "A":
                 print("Claw grabs")
