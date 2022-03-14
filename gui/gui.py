@@ -4,6 +4,8 @@ from PyQt5.QtCore import Qt, pyqtSlot
 from menu import MenuBar
 from active import ActiveTab
 
+import serial
+
 import sys
 import os
 
@@ -12,7 +14,10 @@ import logging
 from datetime import datetime
 
 class AzureUI(QMainWindow):
-    def __init__(self):
+    def __init__(self, port: str, baud_rate: int):
+        self.ser = serial.Serial(self.port, self.baud_rate)
+        self.ser.close()
+        self.ser.open()
         super().__init__()
 
         self.setWindowTitle('Azure UI')
@@ -43,7 +48,6 @@ class AzureUI(QMainWindow):
                 self.menu.hide()
             else:
                 self.menu.show()
-
         elif e.key() == Qt.Key_T:
             if self.active.tabBar().isVisible():
                 self.active.tabBar().hide()
@@ -53,34 +57,80 @@ class AzureUI(QMainWindow):
                 self.frame.layout.removeWidget(window.menu)
 
             logging.info('Toggled styled tabs')
-
         elif e.key() == Qt.Key_1:
             self.active.setCurrentIndex(0)
         elif e.key() == Qt.Key_2:
             self.active.setCurrentIndex(1)
         elif e.key() == Qt.Key_3:
             self.active.setCurrentIndex(2)
-
         elif e.key() == Qt.Key_L:
             if self.menu.logs.isVisible():
                 self.menu.logs.hide()
             else:
                 self.menu.logs.show()
-
         elif e.key() == Qt.Key_C:
             try:
                 file_name = f'captures/{datetime.now().strftime(f"%d-%m-%y_%H:%M:%S.%f")[:-4]}.png'
                 cv2.imwrite(file_name, self.active.cam_tab.image)
-
                 logging.info(f'Image captured as {file_name}')
-
             except cv2.error:
                 logging.error('Camera has not yet loaded; please wait')
-
+        elif e.key() == Qt.Key_W and not e.isAutoRepeat():
+            packet_rightThruster = chr(1) + chr(6) + chr(127) + chr(255)
+            self.ser.write(packet_rightThruster.encode("latin"))
+            packet_leftThruster = chr(1) + chr(7) + chr(127) + chr(255)
+            self.ser.write(packet_leftThruster.encode("latin"))
+        elif e.key() == Qt.Key_S and not e.isAutoRepeat():
+            packet_rightThruster = chr(1) + chr(6) + chr(128) + chr(255)
+            self.ser.write(packet_rightThruster.encode("latin"))
+            packet_leftThruster = chr(1) + chr(7) + chr(128) + chr(255)
+            self.ser.write(packet_leftThruster.encode("latin"))     
+        elif e.key() == Qt.Key_A and not e.isAutoRepeat():
+            packet_rightThruster = chr(1) + chr(6) + chr(128) + chr(255)
+            self.ser.write(packet_rightThruster.encode("latin"))
+            packet_leftThruster = chr(1) + chr(7) + chr(127) + chr(255)
+            self.ser.write(packet_leftThruster.encode("latin"))
+        elif e.key() == Qt.Key_D and not e.isAutoRepeat():
+            packet_rightThruster = chr(1) + chr(6) + chr(127) + chr(255)
+            self.ser.write(packet_rightThruster.encode("latin"))
+            packet_leftThruster = chr(1) + chr(7) + chr(128) + chr(255)
+            self.ser.write(packet_leftThruster.encode("latin"))
+        elif e.key() == Qt.Key_Up and not e.isAutoRepeat():
+            packet = chr(1) + chr(13) + chr(127) + chr(255)
+            self.ser.write(packet.encode("latin"))
+        elif e.key() == Qt.Key_Down and not e.isAutoRepeat():
+            packet = chr(1) + chr(13) + chr(254) + chr(255)
+            self.ser.write(packet.encode("latin"))   
         elif self.active.console_tab.textbox.key_logging and e.text() != chr(13):
             logging.debug(f'Key "{e.text() if e.text().isascii() else None}" pressed')
 
-
+    def keyReleaseEvent(self, e):
+        if e.key() == Qt.Key_W and not e.isAutoRepeat():
+            packet_rightThruster = chr(1) + chr(6) + chr(0) + chr(255)
+            self.ser.write(packet_rightThruster.encode("latin"))
+            packet_leftThruster = chr(1) + chr(7) + chr(0) + chr(255)
+            self.ser.write(packet_leftThruster.encode("latin"))
+        elif e.key() == Qt.Key_S and not e.isAutoRepeat():
+            packet_rightThruster = chr(1) + chr(6) + chr(0) + chr(255)
+            self.ser.write(packet_rightThruster.encode("latin"))
+            packet_leftThruster = chr(1) + chr(7) + chr(0) + chr(255)
+            self.ser.write(packet_leftThruster.encode("latin"))     
+        elif e.key() == Qt.Key_A and not e.isAutoRepeat():
+            packet_rightThruster = chr(1) + chr(6) + chr(0) + chr(255)
+            self.ser.write(packet_rightThruster.encode("latin"))
+            packet_leftThruster = chr(1) + chr(7) + chr(0) + chr(255)
+            self.ser.write(packet_leftThruster.encode("latin"))
+        elif e.key() == Qt.Key_D and not e.isAutoRepeat():
+            packet_rightThruster = chr(1) + chr(6) + chr(0) + chr(255)
+            self.ser.write(packet_rightThruster.encode("latin"))
+            packet_leftThruster = chr(1) + chr(7) + chr(0) + chr(255)
+            self.ser.write(packet_leftThruster.encode("latin"))
+        elif e.key() == Qt.Key_Up and not e.isAutoRepeat():
+            packet = chr(1) + chr(13) + chr(0) + chr(255)
+            self.ser.write(packet.encode("latin"))
+        elif e.key() == Qt.Key_Down and not e.isAutoRepeat():
+            packet = chr(1) + chr(13) + chr(0) + chr(255)
+            self.ser.write(packet.encode("latin"))
 
 if __name__ == '__main__':
     app = QApplication([])
