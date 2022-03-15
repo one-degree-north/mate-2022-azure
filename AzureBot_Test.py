@@ -26,11 +26,11 @@ class Comms:
             #leftJoy_LR = packetControls.packet[0] #will finalize once I know what values will come
             self.leftJoy_UD = self.packetControl.packet[1]
             self.rightJoy_LR = self.packetControls.packet[2]
-            #rightJoy_UD = packetControls.packet[3]
-            self.servoRotate = self.packetControls.packet[4]
-            self.servoGrab = self.packetControls.packet[5]
-            self.LB_up = self.packetControls.packets[6]
-            self.RB_down = self.packetControls.packet[7]
+            self.servoRotate = self.packetControls.packet[3]
+            self.servoGrab = self.packetControls.packet[4]
+            self.LB_up = self.packetControls.packets[5]
+            self.RB_down = self.packetControls.packet[6]
+            self.Y = self.packetControls.packet[7]
 
             #coordinate => [x,y]
             if (self.leftJoy_UD[1] > 0.5*maxCoordinates):
@@ -118,12 +118,15 @@ class Comms:
             if (self.RB_up == True):
                 packet_RB_up = chr(1) + chr(13) + chr(127) + chr(255)
                 self.ser.write(packet_RB_up)
-            elif (self.LB_up == True):
+            if (self.LB_up == True):
                 packet_LB_up = chr(1) + chr(13) + chr(254) + chr(255)
                 self.ser.write(packet_LB_up)
+            #systems will read chr(13) and chr(127) will turn all 4 up-down motors up and chr(254) will turn them all down.
 
-
-            #systems will read chr(13) and turn all 4 up-down motors up, and the chr(14) will turn them all down.
+            if (self.Y == True):
+                packet_killSwitch = chr(1) + chr(14) + chr(100) + chr(255)
+                self.ser.write(packet_killSwitch)
+            #second byte chr(14) means kill all operations, while chr(100) is just an empty byte
 
             #to recieve the gyroscope information from systems
             packet_IMUdata = self.Serial.read(size=4)
