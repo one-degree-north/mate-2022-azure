@@ -115,12 +115,14 @@ class Comms:
                 self.ser.write(packet_servoGrab_off)
 
             #4 up and down motors 
-            if (self.LB_up == True):
-                packet_LB_up = chr(1) + chr(13) + chr(127) + chr(255)
-                self.ser.write(packet_LB_up)
-            elif (self.RB_up == True):
-                packet_RB_up = chr(1) + chr(13) + chr(254) + chr(255)
+            if (self.RB_up == True):
+                packet_RB_up = chr(1) + chr(13) + chr(127) + chr(255)
                 self.ser.write(packet_RB_up)
+            elif (self.LB_up == True):
+                packet_LB_up = chr(1) + chr(13) + chr(254) + chr(255)
+                self.ser.write(packet_LB_up)
+
+
             #systems will read chr(13) and turn all 4 up-down motors up, and the chr(14) will turn them all down.
 
             #to recieve the gyroscope information from systems
