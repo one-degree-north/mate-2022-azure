@@ -93,6 +93,9 @@ while 1:
                 print("Claw releases")                
             elif event.button == "X":
                 print("Take picture")
+            elif event.button == "Y":
+                controller.comms.packetControls.packet[7] = true
+                print("Robot is killed")
                 
 
         elif event.type == EVENT_BUTTON_RELEASED:                
@@ -118,6 +121,7 @@ while 1:
                 print("Stop taking pictures")
 
             elif event.button == "Y":
+                controller.comms.packetControls.packet[7] = true
                 print("Robot is killed")
         
    
