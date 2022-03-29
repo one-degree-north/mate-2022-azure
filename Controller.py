@@ -186,7 +186,4 @@ def run(self):
                     print("Robot is killed")
                 #don't need; when Y is pressed a kill packet will be sent
                 '''
-                    
-        
-   
 
