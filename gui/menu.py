@@ -19,7 +19,7 @@ class MenuBar(QWidget):
             }
         """)
 
-        self.setFixedWidth(280)
+        self.setFixedWidth(250)
 
         # Image
         self.image = cv2.imread('gui/odn-logo.png', cv2.IMREAD_UNCHANGED)
