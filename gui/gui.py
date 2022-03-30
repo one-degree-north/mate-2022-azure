@@ -13,11 +13,13 @@ import cv2
 import logging
 from datetime import datetime
 
+
 class AzureUI(QMainWindow):
     def __init__(self, port: str, baud_rate: int):
         self.ser = serial.Serial(self.port, self.baud_rate)
         self.ser.close()
         self.ser.open()
+
         super().__init__()
 
         self.setWindowTitle('Azure UI')
@@ -63,18 +65,36 @@ class AzureUI(QMainWindow):
             self.active.setCurrentIndex(1)
         elif e.key() == Qt.Key_3:
             self.active.setCurrentIndex(2)
+        elif e.key() == Qt.Key_4:
+            self.active.setCurrentIndex(3)
+        elif e.key() == Qt.Key_5:
+            self.active.setCurrentIndex(4)
         elif e.key() == Qt.Key_L:
             if self.menu.logs.isVisible():
                 self.menu.logs.hide()
             else:
                 self.menu.logs.show()
         elif e.key() == Qt.Key_C:
+
             try:
-                file_name = f'captures/{datetime.now().strftime(f"%d-%m-%y_%H:%M:%S.%f")[:-4]}.png'
-                cv2.imwrite(file_name, self.active.cam_tab.image)
-                logging.info(f'Image captured as {file_name}')
+                timestamp = datetime.now().strftime(f"%d-%m-%y_%H:%M:%S")
+                os.mkdir(f'captures/{timestamp}')
+
+                file1_name = f'captures/{timestamp}/cap1.png'
+                cv2.imwrite(file1_name, self.active.cam1_tab.image)
+
+                file2_name = f'captures/{timestamp}/cap2.png'
+                cv2.imwrite(file2_name, self.active.cam2_tab.image)
+
+
+                logging.info(f"""Images captured under directory:
+                captures/{timestamp}
+                    ↪ cap1.png
+                    ↪ cap2.png
+                """)
             except cv2.error:
                 logging.error('Camera has not yet loaded; please wait')
+
         elif e.key() == Qt.Key_W and not e.isAutoRepeat():
             packet_rightThruster = chr(1) + chr(6) + chr(127) + chr(255)
             self.ser.write(packet_rightThruster.encode("latin"))
@@ -151,6 +171,6 @@ if __name__ == '__main__':
     logging.info('Azure UI has loaded sucessfully')
     print('\033[92m\033[1mAzure UI has loaded sucessfully\033[0m')
 
-    logging.info('Captures are saved in the following format: "D-M-Y_H:M:S"')
+    logging.info('Captures are saved in the following format: "d-m-y_H:M:S"')
 
     sys.exit(app.exec())

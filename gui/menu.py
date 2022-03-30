@@ -45,18 +45,26 @@ class MenuBar(QWidget):
         self.menu_button = TabButton('Menu')
         self.menu_button.clicked.connect(lambda: parent.active.setCurrentIndex(0))
 
-        self.cam_button = TabButton('Camera')
-        self.cam_button.clicked.connect(lambda: parent.active.setCurrentIndex(1))
+        self.grid_button = TabButton('Camera Grid')
+        self.grid_button.clicked.connect(lambda: parent.active.setCurrentIndex(1))
+
+        self.cam1_button = TabButton('Camera 1')
+        self.cam1_button.clicked.connect(lambda: parent.active.setCurrentIndex(2))
+
+        self.cam2_button = TabButton('Camera 2')
+        self.cam2_button.clicked.connect(lambda: parent.active.setCurrentIndex(3))
 
         self.logs_button = TabButton('Console')
-        self.logs_button.clicked.connect(lambda: parent.active.setCurrentIndex(2))
+        self.logs_button.clicked.connect(lambda: parent.active.setCurrentIndex(4))
 
         # Tab layout
         self.tabs = QWidget()
         self.tabs.layout = QVBoxLayout()
 
         self.tabs.layout.addWidget(self.menu_button)
-        self.tabs.layout.addWidget(self.cam_button)
+        self.tabs.layout.addWidget(self.grid_button)
+        self.tabs.layout.addWidget(self.cam1_button)
+        self.tabs.layout.addWidget(self.cam2_button)
         self.tabs.layout.addWidget(self.logs_button)
 
         self.tabs.setLayout(self.tabs.layout)
