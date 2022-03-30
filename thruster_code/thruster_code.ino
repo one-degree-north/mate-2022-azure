@@ -15,12 +15,12 @@ void setup() {
   claw_rotate.attach(13);
   claw_grab.attach(14);
   
-  motFR.attach(7, 1000, 2000);  
-  motBR.attach(8, 1000, 2000);
-  motBL.attach(9, 1000, 2000);
-  motFL.attach(10, 1000, 2000);
-  motR.attach(11, 1000, 2000);
-  motL.attach(12, 1000, 2000);
+  motFR.attach(A5, 1000, 2000);  
+  motBR.attach(A2, 1000, 2000);
+  motBL.attach(A4, 1000, 2000);
+  motFL.attach(A3, 1000, 2000);
+  motR.attach(10, 1000, 2000);
+  motL.attach(9, 1000, 2000);
   
   motFR.writeMicroseconds(1500);
   motBR.writeMicroseconds(1500);
