@@ -8,14 +8,9 @@ except ImportError:
 set_deadzone(DEADZONE_TRIGGER,10)
 
 class Controller:
-    def __init__(self, center, comms, port:str, baud_rate: int):
+    def __init__(self, center, comms):
         self.center = center
         self.comms = comms
-        self.port = port
-        self.baud_rate = baud_rate
-        self.ser = serial.Serial(self.port, self,baud_rate)
-        self.ser.close()
-        self.ser.open()
         self.on_indicator_pos = (self.center[0], self.center[1] - 50)       
         self.r_thumb_pos = (self.center[0] + 50, self.center[1] + 20)
         self.l_thumb_pos = (self.center[0] - 100, self.center[1] - 20)        
@@ -59,9 +54,9 @@ def run(self):
                         print("Robot goes backward")
                         self.value = self.send_self.value(self.percentage_x)
                         self.packet_rightThruster = chr(1) + chr(6) + chr(self.value) + chr(255)
-                        self.ser.write(self.packet_rightThruster.encode("latin"))
+                        self.comms.write(self.packet_rightThruster.encode("latin"))
                         self.packet_leftThruster = chr(1) + chr(7) + chr(self.value) + chr(255)
-                        self.ser.write(self.packet_leftThruster.encode("latin"))
+                        self.comms.write(self.packet_leftThruster.encode("latin"))
                         
                     elif self.l_thumb_stick_pos[1] < 80:
                         self.percentage_x = int(((80 - self.l_thumb_stick_pos[1])/25)*100)
@@ -69,9 +64,9 @@ def run(self):
                         print("Robot goes forward")
                         self.value = self.send_self.value(self.percentage_x)
                         self.packet_rightThruster = chr(1) + chr(6) + chr(self.value) + chr(255)
-                        self.ser.write(self.packet_rightThruster.encode("latin"))
+                        self.comms.write(self.packet_rightThruster.encode("latin"))
                         self.packet_leftThruster = chr(1) + chr(7) + chr(self.value) + chr(255)
-                        self.ser.write(self.packet_leftThruster.encode("latin"))
+                        self.comms.write(self.packet_leftThruster.encode("latin"))
                 
                 elif event.stick == RIGHT:
                     self.r_thumb_stick_pos = (int(round(controller.self.r_thumb_pos[0] + 25 * event.x,0)), int(round(controller.self.r_thumb_pos[1] - 25 * event.y,0)))
@@ -82,12 +77,12 @@ def run(self):
                         #joystick has been moved to the right - code left thruster to move
                         self.value_leftMot = self.send_value(self.rightJoy_LR)
                         self.packet_leftThruster = chr(1) + chr(6) + chr(self.value_leftMot) + chr(255)
-                        self.ser.write(self.packet_leftThruster.encode("latin"))
+                        self.comms.write(self.packet_leftThruster.encode("latin"))
                         #right thruster going the other way
                         self.value_rightMot = self.send_value(-self.rightJoy_LR)
                         self.convert_value_rightMot = (self.value_rightMot).encode("latin")
                         self.packet_rightThruster = chr(1) + chr(7) + chr(self.value_rightMot) + chr(255)
-                        self.ser.write(self.packet_rightThruster.encode("latin"))
+                        self.comms.write(self.packet_rightThruster.encode("latin"))
                         
                     elif self.r_thumb_stick_pos[0] < 200:
                         self.percentage_y = int(((200 - self.r_thumb_stick_pos[0])/25)*100)
@@ -96,11 +91,11 @@ def run(self):
                         #joystick has been moved to the left - code right thruster to move
                         self.value_rightMot = self.send_value(self.rightJoy_LR)
                         self.packet_rightThruster = chr(1) + chr(6) + chr(self.value_rightMot) + chr(255)
-                        self.ser.write(self.packet_rightThruster.encode("latin"))
+                        self.comms.write(self.packet_rightThruster.encode("latin"))
                         #left thruster goes the other way
                         self.value_leftMot = self.send_value(-self.rightJoy_LR)
                         self.packet_leftThruster = chr(1) + chr(7) + chr(self.value_leftMot) + chr(255)
-                        self.ser.write(self.packet_leftThruster.encode("latin"))
+                        self.comms.write(self.packet_leftThruster.encode("latin"))
                 
             elif event.type == EVENT_TRIGGER_MOVED:
                 if event.trigger == LEFT:
@@ -110,7 +105,7 @@ def run(self):
                         self.comms.packetControls.packet[7] = true
                         print("Robot goes down")
                         self.packet_LB_up = chr(1) + chr(13) + chr(254) + chr(255)
-                        self.ser.write(self.packet_LB_up.encode("latin"))
+                        self.comms.write(self.packet_LB_up.encode("latin"))
                         
                 elif event.trigger == RIGHT:
                     self.r_trigger_index_pos = (controller.r_trigger_pos[0], controller.r_trigger_pos[1] - 20 + int(round(40 * event.value, 0)))
@@ -119,7 +114,7 @@ def run(self):
                         self.comms.packetControls.packet[6] = true
                         print("Robot goes up")
                         self.packet_RB_up = chr(1) + chr(13) + chr(127) + chr(255)
-                        self.ser.write(self.packet_RB_up.encode("latin"))
+                        self.comms.write(self.packet_RB_up.encode("latin"))
                         
             elif event.type == EVENT_BUTTON_PRESSED:                
 
@@ -136,7 +131,7 @@ def run(self):
                     self.comms.packetControls.packet[5] = True
                     print("Claw grabs")
                     self.packet_servoGrab = chr(1) + chr(9) + chr(12) + chr(255)
-                    self.ser.write(self.packet_servoGrab.encode("latin"))
+                    self.comms.write(self.packet_servoGrab.encode("latin"))
                 
                 '''
                 elif event.button == "B":
@@ -152,7 +147,7 @@ def run(self):
                     self.comms.packetControls.packet[7] = True
                     print("Robot is killed")
                     self.packet_killSwitch = chr(1) + chr(14) + chr(100) + chr(255)
-                    self.ser.write(self.packet_killSwitch.encode("latin"))
+                    self.comms.write(self.packet_killSwitch.encode("latin"))
               
             elif event.type == EVENT_BUTTON_RELEASED:                
                 if event.button == "DPAD_LEFT":
@@ -168,7 +163,7 @@ def run(self):
                     self.comms.packetControls.packet[5] = True
                     print("Claw stops grabbing")
                     self.packet_servoGrab_off = chr(1) + chr(9) + chr(11) + chr(255)
-                    self.ser.write(self.packet_servoGrab_off.encode("latin"))
+                    self.comms.write(self.packet_servoGrab_off.encode("latin"))
                 
                 '''
                 elif event.button == "B":
