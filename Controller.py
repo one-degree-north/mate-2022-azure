@@ -102,7 +102,7 @@ def run(self):
                     self.l_trigger_index_pos = (controller.l_trigger_pos[0], controller.l_trigger_pos[1] - 20 + int(round(40 * event.value, 0)))
                     print(self.l_trigger_index_pos)
                     if self.l_trigger_index_pos[1] > 30:
-                        self.comms.packetControls.packet[7] = true
+                        self.comms.packetControls.packet[7] = True
                         print("Robot goes down")
                         self.packet_LB_up = chr(1) + chr(13) + chr(254) + chr(255)
                         self.comms.write(self.packet_LB_up.encode("latin"))
@@ -111,7 +111,7 @@ def run(self):
                     self.r_trigger_index_pos = (controller.r_trigger_pos[0], controller.r_trigger_pos[1] - 20 + int(round(40 * event.value, 0)))
                     print(self.r_trigger_index_pos)
                     if self.r_trigger_index_pos[1] > 30:
-                        self.comms.packetControls.packet[6] = true
+                        self.comms.packetControls.packet[6] = True
                         print("Robot goes up")
                         self.packet_RB_up = chr(1) + chr(13) + chr(127) + chr(255)
                         self.comms.write(self.packet_RB_up.encode("latin"))
