@@ -68,16 +68,16 @@ void loop() {
       }
       else if (motor == 13){
         if (m == 127){
-          motFR.writeMicroseconds(2000);
-          motFL.writeMicroseconds(2000);
-          motBR.writeMicroseconds(2000);
-          motBL.writeMicroseconds(2000);
+          motFR.writeMicroseconds(1700);
+          motFL.writeMicroseconds(1700);
+          motBR.writeMicroseconds(1700);
+          motBL.writeMicroseconds(1700);
         }
         else if (m == 254){
-          motFR.writeMicroseconds(1000);
-          motFL.writeMicroseconds(1000);
-          motBR.writeMicroseconds(1000);
-          motBL.writeMicroseconds(1000);
+          motFR.writeMicroseconds(1300);
+          motFL.writeMicroseconds(1300);
+          motBR.writeMicroseconds(1300);
+          motBL.writeMicroseconds(1300);
         }
         else if (m == 0){
           motFR.writeMicroseconds(1500);
