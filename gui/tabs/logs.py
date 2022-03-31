@@ -51,7 +51,8 @@ class CommandLine(QLineEdit):
             QWidget {
                 background: rgb(235, 235, 235);
                 border-radius: 5px;
-                padding: 10px
+                padding: 10px;
+                margin: 10px
             }
         """)
 
@@ -162,7 +163,8 @@ class MiniLogsWindow(Logs):
             QWidget {
                 background: rgb(255, 255, 255);
                 border-radius: 10px;
-                margin: 20px
+                margin: 20px;
+                font: 10px
             }
         """)
 

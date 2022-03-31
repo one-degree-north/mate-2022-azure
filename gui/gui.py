@@ -15,10 +15,10 @@ from datetime import datetime
 
 
 class AzureUI(QMainWindow):
-    def __init__(self, port: str, baud_rate: int):
-        self.ser = serial.Serial(self.port, self.baud_rate)
-        self.ser.close()
-        self.ser.open()
+    def __init__(self):#, port: str, baud_rate: int):
+        # self.ser = serial.Serial(self.port, self.baud_rate)
+        # self.ser.close()
+        # self.ser.open()
 
         super().__init__()
 
@@ -29,7 +29,7 @@ class AzureUI(QMainWindow):
         self.frame.layout = QHBoxLayout()
 
         self.menu = MenuBar(self)
-        self.active = ActiveTab()
+        self.active = ActiveTab(self)
 
         self.frame.layout.addWidget(self.menu)
         self.frame.layout.addWidget(self.active)
@@ -87,10 +87,7 @@ class AzureUI(QMainWindow):
                 cv2.imwrite(file2_name, self.active.cam2_tab.image)
 
 
-                logging.info(f"""Images captured under directory:
-                captures/{timestamp}
-                    ↪ cap1.png
-                    ↪ cap2.png
+                logging.info(f"""captures/{timestamp}\n↪ cap1.png\n↪ cap2.png
                 """)
             except cv2.error:
                 logging.error('Camera has not yet loaded; please wait')

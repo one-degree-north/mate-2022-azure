@@ -9,11 +9,11 @@ from tabs.logs import ConsoleTab
 import yaml
 
 class ActiveTab(QTabWidget):
-    def __init__(self):
+    def __init__(self, parent):
         super().__init__()
         self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
         
-        self.home_tab = HomeTab()
+        self.home_tab = HomeTab(parent)
         self.grid_tab = Grid(settings['camera-port-1'], settings['camera-port-2'])
         self.cam1_tab = Camera(settings['camera-port-1'])
         self.cam2_tab = Camera(settings['camera-port-2'])
