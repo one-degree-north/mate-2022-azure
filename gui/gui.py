@@ -77,7 +77,7 @@ class AzureUI(QMainWindow):
         elif e.key() == Qt.Key_C:
 
             try:
-                timestamp = datetime.now().strftime(f"%d-%m-%y_%H:%M:%S")
+                timestamp = datetime.now().strftime(f'%d-%m-%y_%H:%M:%S.%f')[:-4]
                 os.mkdir(f'captures/{timestamp}')
 
                 file1_name = f'captures/{timestamp}/cap1.png'
@@ -89,8 +89,12 @@ class AzureUI(QMainWindow):
 
                 logging.info(f"""captures/{timestamp}\n↪ cap1.png\n↪ cap2.png
                 """)
+            except FileNotFoundError:
+                os.mkdir('captures')
+                logging.warn('The "captures" folder was not found; one has been generated for you')
+
             except cv2.error:
-                logging.error('Camera has not yet loaded; please wait')
+                logging.error('Camera has not yet loaded, please wait')
 
         elif e.key() == Qt.Key_W and not e.isAutoRepeat():
             packet_rightThruster = chr(1) + chr(6) + chr(127) + chr(255)
@@ -160,14 +164,14 @@ if __name__ == '__main__':
 
     # Create "captures" directory
     try:
-        os.makedirs('captures')
-        logging.warn('No captures directory detected; creating one for you!')
+        os.mkdir('captures')
+        logging.warn('No captures directory detected; one has been generated for you!')
     except FileExistsError:
         pass
 
-    logging.info('Azure UI has loaded sucessfully')
-    print('\033[92m\033[1mAzure UI has loaded sucessfully\033[0m')
+    logging.info('Images are saved under the "captures" directory in the format "d-m-y_H:M:S"')
 
-    logging.info('Captures are saved in the following format: "d-m-y_H:M:S"')
+    logging.info('Azure UI has loaded sucessfully\n\n')
+    print('\033[92m\033[1mAzure UI has loaded sucessfully\033[0m')
 
     sys.exit(app.exec())
