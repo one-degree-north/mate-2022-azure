@@ -1,3 +1,4 @@
+#define Serial Serial1
 #include <Servo.h>
 
 Servo motFR;
