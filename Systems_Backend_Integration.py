@@ -6,7 +6,7 @@ class Comms:
     def __init__(self, port: str, baud_rate: int):
         self.port = port
         self.baud_rate = baud_rate
-        self.ser = serial.Serial(self.port, self,baud_rate)
+        self.ser = serial.Serial(self.port, self.baud_rate)
         self.ser.close()
         self.ser.open()
 
