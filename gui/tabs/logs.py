@@ -35,13 +35,6 @@ class Logs(QDialog, QPlainTextEdit):
     def reject(self):
         pass
 
-    # def keyPressEvent(self, e):
-    #     if e.key() == Qt.Key_Tab:
-    #         return True
-    #     else:
-    #         self.event(self, e)
-
-
 
 class CommandLine(QLineEdit):
     def __init__(self):
@@ -123,6 +116,7 @@ class CommandLine(QLineEdit):
         
         else:
             logging.error(f'Command "{self.split_text[0]}" does not exist')
+
 
 class ConsoleTab(QWidget):
     def __init__(self):

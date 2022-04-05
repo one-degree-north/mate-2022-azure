@@ -39,20 +39,6 @@ class MenuBar(QWidget):
 
         # Mini logs
         self.logs = MiniLogsWindow()
-        # self.logs.setStyleSheet('font: 10px')
-
-        # self.logs.setStyleSheet("""
-        #     QWidget {
-        #         background: rgb(235, 235, 235);
-        #         border-radius: 5px;
-        #         padding: 8px
-        #     },
-
-        #     QLineEdit {
-        #         font: 10px
-        #     }
-        # """)
-
 
         # Tab buttons
         self.menu_button = TabButton('Menu')
@@ -81,7 +67,6 @@ class MenuBar(QWidget):
         self.tabs.layout.addWidget(self.logs_button)
 
         self.tabs.setLayout(self.tabs.layout)
-
 
         # Bar layout
         self.layout = QVBoxLayout()

@@ -32,6 +32,7 @@ class VideoThread(QThread):
         self.running = False
         self.wait()
 
+
 class Camera(QWidget):
     def __init__(self, port):
         super().__init__()
