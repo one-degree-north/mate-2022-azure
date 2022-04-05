@@ -16,7 +16,7 @@ from datetime import datetime
 
 class AzureUI(QMainWindow):
     def __init__(self):#, port: str, baud_rate: int):
-        # self.ser = serial.Serial(self.port, self.baud_rate)
+        # self.ser = serial.Serial(port, baud_rate)
         # self.ser.close()
         # self.ser.open()
 
@@ -91,7 +91,7 @@ class AzureUI(QMainWindow):
                 """)
             except FileNotFoundError:
                 os.mkdir('captures')
-                logging.warn('The "captures" folder was not found; one has been generated for you')
+                logging.warning('The "captures" folder was not found; one has been created for you')
 
             except cv2.error:
                 logging.error('Camera has not yet loaded, please wait')
@@ -165,7 +165,7 @@ if __name__ == '__main__':
     # Create "captures" directory
     try:
         os.mkdir('captures')
-        logging.warn('No captures directory detected; one has been generated for you!')
+        logging.warning('No captures directory detected; one has been generated for you!')
     except FileExistsError:
         pass
 

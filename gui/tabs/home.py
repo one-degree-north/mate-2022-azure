@@ -14,16 +14,7 @@ class HomeTab(QWidget):
     def __init__(self, parent):
         super().__init__()
 
-        # Title
-        self.title = QLabel('MATE Azure User Interface')
-        self.title.setStyleSheet("""
-            QLabel {
-                font: bold 50px;
-                color: white
-            }
-        """)
-        self.title.setAlignment(Qt.AlignLeft)
-        self.title.setFixedHeight(80)
+        self.title = Title()
 
         # View box
         self.view_box = ViewBox(parent)
@@ -33,8 +24,46 @@ class HomeTab(QWidget):
 
         self.layout.addWidget(self.title)
         self.layout.addWidget(self.view_box)
+        # self.layout.addWidget(ViewBox(parent), 1,1)
+
+        # self.layout.setSpacing(20)
 
         self.setLayout(self.layout)
+
+class LowerLayout(QHBoxLayout):
+    def __init__(self, parent):
+        self.view_box = ViewBox(parent)
+
+class RightLayout(QVBoxLayout):
+    def __init__(self, parent):
+        self.view_box = ViewBox(parent)
+        self.addWidget()
+
+class ControlBar(QWidget):
+    def __init__(self):
+        pass
+
+class Title(QLabel):
+    def __init__(self):
+        super().__init__('Azure User Interface')
+
+        self.setStyleSheet("""
+            QLabel {
+                background: rgb(17, 28, 43);
+                border-radius: 10px;
+                padding: 12px;
+                margin: 5px;
+
+                font: bold 40px;
+                color: white
+            }
+        """)
+
+        # self.setFixedSize(450, 80)
+        self.setFixedHeight(70)
+        self.setAlignment(Qt.AlignCenter)
+        
+
 
 class ViewBox(QWidget):
     def __init__(self, parent):
@@ -44,13 +73,14 @@ class ViewBox(QWidget):
         self.setStyleSheet("""
             QWidget {
                 background: rgb(17, 28, 43);
-                border-radius: 10px
+                border-radius: 10px;
+                margin: 5px
             }
         """)
 
         self.view = View(parent)
 
-        self.layout = QHBoxLayout()
+        self.layout = QVBoxLayout()
         self.layout.addWidget(self.view)
 
         self.setLayout(self.layout)

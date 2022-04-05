@@ -51,7 +51,6 @@ class Grid(QWidget):
             self.layout.addWidget(self.camera)
 
             self.setLayout(self.layout)
-            print(port)
 
             self.thread = VideoThread(port)
             self.thread.change_pixmap_signal.connect(self.update_image)
