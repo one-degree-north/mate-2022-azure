@@ -15,10 +15,10 @@ from datetime import datetime
 
 
 class AzureUI(QMainWindow):
-    def __init__(self):#, port: str, baud_rate: int):
-        # self.ser = serial.Serial(port, baud_rate)
-        # self.ser.close()
-        # self.ser.open()
+    def __init__(self, port: str, baud_rate: int):
+        self.ser = serial.Serial(port, baud_rate)
+        self.ser.close()
+        self.ser.open()
 
         super().__init__()
 
