@@ -1,3 +1,4 @@
+#define Serial Serial1
 #include <Servo.h>
 #include "Adafruit_BNO055.h"
 
@@ -12,7 +13,6 @@ Servo claw_grab;
 
 void setup() {
   Serial.begin(9600);
-  Serial1.begin(9600);
   
   claw_rotate.attach(13);
   claw_grab.attach(14);
@@ -32,25 +32,20 @@ void setup() {
   motL.writeMicroseconds(1500);
   
   delayMicroseconds(5000);
-  while (!Serial1);
   while (!Serial);
-  Serial.println("ready");
 }
 
 void loop() {
-  if(Serial1.available() >= 4){
-    byte header = Serial1.read();
+  if(Serial.available() >= 4){
+    byte header = Serial.read();
     if (header == 1){
-      uint8_t motor = Serial1.read();
-      uint8_t m = Serial1.read();   
-      byte footer = Serial1.read();
-
-      Serial.println(motor);
-      Serial.println(m);
+      uint8_t motor = Serial.read();
+      uint8_t m = Serial.read();   
+      byte footer = Serial.read();
 
       if (footer != 255) return;
       
-      /*if (m == 0){
+      if (m == 0){
         m = 1500;
       }
       else if (m < 0){ 
@@ -58,8 +53,7 @@ void loop() {
       }
       else if (m > 0){
         m = map(m, 1, 127, 1501, 2000);
-      }*/
-      
+      }   
       if (motor == 2){
         motFR.writeMicroseconds(m * 10);
       } 
@@ -96,7 +90,6 @@ void loop() {
           motFL.writeMicroseconds(1500);
           motBR.writeMicroseconds(1500);
           motBL.writeMicroseconds(1500);
-        }
       }
       else if (motor == 14){
           motFR.writeMicroseconds(1500);
@@ -105,6 +98,7 @@ void loop() {
           motBL.writeMicroseconds(1500);
           motR.writeMicroseconds(1500);
           motL.writeMicroseconds(1500);
+        }
       }
     }
   }
