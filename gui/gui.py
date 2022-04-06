@@ -101,62 +101,62 @@ class AzureUI(QMainWindow):
             except cv2.error:
                 logging.error('Camera has not yet loaded, please wait')
 
-        elif e.key() == Qt.Key_W and not e.isAutoRepeat():
-            packet_rightThruster = chr(1) + chr(6) + chr(127) + chr(255)
-            self.ser.write(packet_rightThruster.encode("latin"))
-            packet_leftThruster = chr(1) + chr(7) + chr(127) + chr(255)
-            self.ser.write(packet_leftThruster.encode("latin"))
-        elif e.key() == Qt.Key_S and not e.isAutoRepeat():
-            packet_rightThruster = chr(1) + chr(6) + chr(128) + chr(255)
-            self.ser.write(packet_rightThruster.encode("latin"))
-            packet_leftThruster = chr(1) + chr(7) + chr(128) + chr(255)
-            self.ser.write(packet_leftThruster.encode("latin"))     
-        elif e.key() == Qt.Key_A and not e.isAutoRepeat():
-            packet_rightThruster = chr(1) + chr(6) + chr(128) + chr(255)
-            self.ser.write(packet_rightThruster.encode("latin"))
-            packet_leftThruster = chr(1) + chr(7) + chr(127) + chr(255)
-            self.ser.write(packet_leftThruster.encode("latin"))
-        elif e.key() == Qt.Key_D and not e.isAutoRepeat():
-            packet_rightThruster = chr(1) + chr(6) + chr(127) + chr(255)
-            self.ser.write(packet_rightThruster.encode("latin"))
-            packet_leftThruster = chr(1) + chr(7) + chr(128) + chr(255)
-            self.ser.write(packet_leftThruster.encode("latin"))
-        elif e.key() == Qt.Key_Up and not e.isAutoRepeat():
-            packet = chr(1) + chr(13) + chr(127) + chr(255)
-            self.ser.write(packet.encode("latin"))
-        elif e.key() == Qt.Key_Down and not e.isAutoRepeat():
-            packet = chr(1) + chr(13) + chr(254) + chr(255)
-            self.ser.write(packet.encode("latin"))   
-        elif self.active.console_tab.textbox.key_logging and e.text() != chr(13):
-            logging.debug(f'Key "{e.text() if e.text().isascii() else None}" pressed')
+    #     elif e.key() == Qt.Key_W and not e.isAutoRepeat():
+    #         packet_rightThruster = chr(1) + chr(6) + chr(127) + chr(255)
+    #         self.ser.write(packet_rightThruster.encode("latin"))
+    #         packet_leftThruster = chr(1) + chr(7) + chr(127) + chr(255)
+    #         self.ser.write(packet_leftThruster.encode("latin"))
+    #     elif e.key() == Qt.Key_S and not e.isAutoRepeat():
+    #         packet_rightThruster = chr(1) + chr(6) + chr(128) + chr(255)
+    #         self.ser.write(packet_rightThruster.encode("latin"))
+    #         packet_leftThruster = chr(1) + chr(7) + chr(128) + chr(255)
+    #         self.ser.write(packet_leftThruster.encode("latin"))     
+    #     elif e.key() == Qt.Key_A and not e.isAutoRepeat():
+    #         packet_rightThruster = chr(1) + chr(6) + chr(128) + chr(255)
+    #         self.ser.write(packet_rightThruster.encode("latin"))
+    #         packet_leftThruster = chr(1) + chr(7) + chr(127) + chr(255)
+    #         self.ser.write(packet_leftThruster.encode("latin"))
+    #     elif e.key() == Qt.Key_D and not e.isAutoRepeat():
+    #         packet_rightThruster = chr(1) + chr(6) + chr(127) + chr(255)
+    #         self.ser.write(packet_rightThruster.encode("latin"))
+    #         packet_leftThruster = chr(1) + chr(7) + chr(128) + chr(255)
+    #         self.ser.write(packet_leftThruster.encode("latin"))
+    #     elif e.key() == Qt.Key_Up and not e.isAutoRepeat():
+    #         packet = chr(1) + chr(13) + chr(127) + chr(255)
+    #         self.ser.write(packet.encode("latin"))
+    #     elif e.key() == Qt.Key_Down and not e.isAutoRepeat():
+    #         packet = chr(1) + chr(13) + chr(254) + chr(255)
+    #         self.ser.write(packet.encode("latin"))   
+    #     elif self.active.console_tab.textbox.key_logging and e.text() != chr(13):
+    #         logging.debug(f'Key "{e.text() if e.text().isascii() else None}" pressed')
 
-    def keyReleaseEvent(self, e):
-        if e.key() == Qt.Key_W and not e.isAutoRepeat():
-            packet_rightThruster = chr(1) + chr(6) + chr(0) + chr(255)
-            self.ser.write(packet_rightThruster.encode("latin"))
-            packet_leftThruster = chr(1) + chr(7) + chr(0) + chr(255)
-            self.ser.write(packet_leftThruster.encode("latin"))
-        elif e.key() == Qt.Key_S and not e.isAutoRepeat():
-            packet_rightThruster = chr(1) + chr(6) + chr(0) + chr(255)
-            self.ser.write(packet_rightThruster.encode("latin"))
-            packet_leftThruster = chr(1) + chr(7) + chr(0) + chr(255)
-            self.ser.write(packet_leftThruster.encode("latin"))     
-        elif e.key() == Qt.Key_A and not e.isAutoRepeat():
-            packet_rightThruster = chr(1) + chr(6) + chr(0) + chr(255)
-            self.ser.write(packet_rightThruster.encode("latin"))
-            packet_leftThruster = chr(1) + chr(7) + chr(0) + chr(255)
-            self.ser.write(packet_leftThruster.encode("latin"))
-        elif e.key() == Qt.Key_D and not e.isAutoRepeat():
-            packet_rightThruster = chr(1) + chr(6) + chr(0) + chr(255)
-            self.ser.write(packet_rightThruster.encode("latin"))
-            packet_leftThruster = chr(1) + chr(7) + chr(0) + chr(255)
-            self.ser.write(packet_leftThruster.encode("latin"))
-        elif e.key() == Qt.Key_Up and not e.isAutoRepeat():
-            packet = chr(1) + chr(13) + chr(0) + chr(255)
-            self.ser.write(packet.encode("latin"))
-        elif e.key() == Qt.Key_Down and not e.isAutoRepeat():
-            packet = chr(1) + chr(13) + chr(0) + chr(255)
-            self.ser.write(packet.encode("latin"))
+    # def keyReleaseEvent(self, e):
+    #     if e.key() == Qt.Key_W and not e.isAutoRepeat():
+    #         packet_rightThruster = chr(1) + chr(6) + chr(0) + chr(255)
+    #         self.ser.write(packet_rightThruster.encode("latin"))
+    #         packet_leftThruster = chr(1) + chr(7) + chr(0) + chr(255)
+    #         self.ser.write(packet_leftThruster.encode("latin"))
+    #     elif e.key() == Qt.Key_S and not e.isAutoRepeat():
+    #         packet_rightThruster = chr(1) + chr(6) + chr(0) + chr(255)
+    #         self.ser.write(packet_rightThruster.encode("latin"))
+    #         packet_leftThruster = chr(1) + chr(7) + chr(0) + chr(255)
+    #         self.ser.write(packet_leftThruster.encode("latin"))     
+    #     elif e.key() == Qt.Key_A and not e.isAutoRepeat():
+    #         packet_rightThruster = chr(1) + chr(6) + chr(0) + chr(255)
+    #         self.ser.write(packet_rightThruster.encode("latin"))
+    #         packet_leftThruster = chr(1) + chr(7) + chr(0) + chr(255)
+    #         self.ser.write(packet_leftThruster.encode("latin"))
+    #     elif e.key() == Qt.Key_D and not e.isAutoRepeat():
+    #         packet_rightThruster = chr(1) + chr(6) + chr(0) + chr(255)
+    #         self.ser.write(packet_rightThruster.encode("latin"))
+    #         packet_leftThruster = chr(1) + chr(7) + chr(0) + chr(255)
+    #         self.ser.write(packet_leftThruster.encode("latin"))
+    #     elif e.key() == Qt.Key_Up and not e.isAutoRepeat():
+    #         packet = chr(1) + chr(13) + chr(0) + chr(255)
+    #         self.ser.write(packet.encode("latin"))
+    #     elif e.key() == Qt.Key_Down and not e.isAutoRepeat():
+    #         packet = chr(1) + chr(13) + chr(0) + chr(255)
+    #         self.ser.write(packet.encode("latin"))
 
 if __name__ == '__main__':
     app = QApplication([])
