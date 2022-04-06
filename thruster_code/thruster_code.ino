@@ -1,5 +1,6 @@
 #define Serial Serial1
 #include <Servo.h>
+#include "Adafruit_BNO055.h"
 
 Servo motFR;
 Servo motBR;
@@ -35,11 +36,15 @@ void setup() {
 }
 
 void loop() {
-  if(Serial.available() >= 3){
+  if(Serial.available() >= 4){
     byte header = Serial.read();
     if (header == 1){
-      int motor = Serial.read();
-      int8_t m = Serial.read();   
+      uint8_t motor = Serial.read();
+      uint8_t m = Serial.read();   
+      byte footer = Serial.read();
+
+      if (footer != 255) return;
+      
       if (m == 0){
         m = 1500;
       }
@@ -50,22 +55,22 @@ void loop() {
         m = map(m, 1, 127, 1501, 2000);
       }   
       if (motor == 2){
-        motFR.writeMicroseconds(m);
+        motFR.writeMicroseconds(m * 10);
       } 
       else if (motor == 3){
-        motFL.writeMicroseconds(m);
+        motFL.writeMicroseconds(m * 10);
       } 
       else if (motor == 4){
-        motBR.writeMicroseconds(m);
+        motBR.writeMicroseconds(m * 10);
       } 
       else if (motor == 5){
-        motBL.writeMicroseconds(m);
+        motBL.writeMicroseconds(m * 10);
       } 
       else if (motor == 6){
-        motR.writeMicroseconds(m);
+        motR.writeMicroseconds(m * 10);
       } 
       else if (motor == 7){
-        motL.writeMicroseconds(m);
+        motL.writeMicroseconds(m * 10);
       }
       else if (motor == 13){
         if (m == 127){
@@ -87,7 +92,6 @@ void loop() {
           motBL.writeMicroseconds(1500);
       }
       else if (motor == 14){
-        if (m == 100){
           motFR.writeMicroseconds(1500);
           motFL.writeMicroseconds(1500);
           motBR.writeMicroseconds(1500);
@@ -98,27 +102,4 @@ void loop() {
       }
     }
   }
-   reportIMUData();
-}
-void reportIMUData() {
-    sensors_event_t event; 
-    bno.getEvent(&event);
-    sensors_event_t orientation, gyro, accel;
-    bno.getEvent(&orientation, Adafruit_BNO055::VECTOR_EULER);
-    bno.getEvent(&gyro, Adafruit_BNO055::VECTOR_GYROSCOPE);
-    bno.getEvent(&accel, Adafruit_BNO055::VECTOR_LINEARACCEL);
-
-    Serial.write(0xA4);
-  
-    Serial.write(orientation.orientation.x);
-    Serial.write(orientation.orientation.y);
-    Serial.write(orientation.orientation.z);
-    Serial.write(gyro.gyro.x);
-    Serial.write(gyro.gyro.y);
-    Serial.write(gyro.gyro.z);
-    Serial.write(accel.acceleration.x);
-    Serial.write(accel.acceleration.y);
-    Serial.write(accel.acceleration.z);
-
-    Serial.write(0x56);
 }
