@@ -13,7 +13,8 @@ class Comms:
     def run(self):
         self.command = input("Enter Command: ")
         if (self.command == "LeftJoyForward"):
-            #tell both thrusters to move forward 
+            #tell both thrusters to move forward
+            print("GOT COMMAND")
             packet_rightThruster = chr(1) + chr(6) + chr(200) + chr(255)
             self.ser.write(packet_rightThruster.encode("latin"))
             packet_leftThruster = chr(1) + chr(7) + chr(200) + chr(255)
@@ -46,7 +47,7 @@ class Comms:
         #servo claw code
         #chr(11) tells systems to switch off the servo and chr(12) tells to switch on
         if (self.command == "APressed"):
-            packet_servoRotate = chr(1) + chr(8) + chr(12) + chr(255)
+            packet_servoRotate = chr(1) + chr(8) + chr(11) + chr(255)
             self.ser.write(packet_servoRotate.encode("latin"))
         else:
             packet_servoRotate_off = chr(1) + chr(8) + chr(11) + chr(255)
@@ -67,7 +68,7 @@ class Comms:
             #4 motors go up
             packet_RB_up = chr(1) + chr(13) + chr(127) + chr(255)
             self.ser.write(packet_RB_up.encode("latin"))
-        if (self.LB_up == "LeftTrigger"):
+        if (self.command == "LeftTrigger"):
             #4 motors go down
             packet_LB_up = chr(1) + chr(13) + chr(254) + chr(255)
             self.ser.write(packet_LB_up.encode("latin"))
@@ -75,8 +76,11 @@ class Comms:
         if (self.command == "Kill"):
             packet_killSwitch = chr(1) + chr(14) + chr(100) + chr(255)
             self.ser.write(packet_killSwitch.encode("latin"))
-        #second byte chr(14) means kill all operations, while chr(100) is just an empty byte
 
+        if (self.command == "Flush"):
+            self.ser.write("88888".encode("latin"))
+        #second byte chr(14) means kill all operations, while chr(100) is just an empty byte
+        
         '''
         #to recieve the gyroscope information from systems
         packet_IMUdata = self.Serial.read(size=4)
@@ -85,5 +89,6 @@ class Comms:
         header, self.orien.x, self.orien.y, self.orien.z, self.gyro.x, self.gyro.y, self.gyro.z, self.accel.x, self.accel.y, self.accel.z = struct.unpack('ccfffffffff')  
         '''
 
-test = Comms("/dev/tty.usbmodem14101", 9600)
-test.run()
+test = Comms("/dev/tty.usbserial-1110", 9600)
+while True:
+    test.run()
