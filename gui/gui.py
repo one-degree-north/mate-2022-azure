@@ -1,5 +1,6 @@
 from PyQt5.QtWidgets import QApplication, QMainWindow, QHBoxLayout, QWidget
-from PyQt5.QtCore import Qt, pyqtSlot
+from PyQt5.QtGui import QIcon
+from PyQt5.QtCore import Qt
 
 from menu import MenuBar
 from active import ActiveTab
@@ -15,15 +16,17 @@ from datetime import datetime
 
 
 class AzureUI(QMainWindow):
-    def __init__(self, port: str, baud_rate: int):
-        self.ser = serial.Serial(port, baud_rate)
-        self.ser.close()
-        self.ser.open()
+    def __init__(self):#, port: str, baud_rate: int):
+        # self.ser = serial.Serial(port, baud_rate)
+        # self.ser.close()
+        # self.ser.open()
 
         super().__init__()
 
         self.setWindowTitle('Azure UI')
         self.setStyleSheet('background: rgb(24, 40, 61)')
+
+        # self.setFixedSize(1000,800)
 
         self.frame = QWidget()
         self.frame.layout = QHBoxLayout()
@@ -69,6 +72,8 @@ class AzureUI(QMainWindow):
             self.active.setCurrentIndex(3)
         elif e.key() == Qt.Key_5:
             self.active.setCurrentIndex(4)
+        elif e.key() == Qt.Key_6:
+            self.active.setCurrentIndex(5)
         elif e.key() == Qt.Key_L:
             if self.menu.logs.isVisible():
                 self.menu.logs.hide()
@@ -155,6 +160,8 @@ class AzureUI(QMainWindow):
 
 if __name__ == '__main__':
     app = QApplication([])
+
+    app.setWindowIcon(QIcon('gui/icon.png'))
 
     window = AzureUI()
     window.show()

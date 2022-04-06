@@ -71,7 +71,7 @@ class Grid(QWidget):
             h, w, ch = rgb_image.shape
             bytes_per_line = ch * w
             convert_to_Qt_format = QImage(rgb_image.data, w, h, bytes_per_line, QImage.Format_RGB888)
-            p = convert_to_Qt_format.scaled(int(self.parent.display_width), int(self.parent.display_height), Qt.KeepAspectRatio)
+            p = convert_to_Qt_format.scaled(self.parent.display_width, self.parent.display_height, Qt.KeepAspectRatio)
             return QPixmap.fromImage(p)
 
 class VideoThread(QThread):
