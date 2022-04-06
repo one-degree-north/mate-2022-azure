@@ -30,7 +30,7 @@ class Comms:
         #coding left and right movement
         if (self.command == "RightJoyRight"):
             #joystick has been moved to the right - code left thruster to move
-            packet_leftThruster = chr(1) + chr(6) + chr(150) + chr(255)
+            packet_leftThruster = chr(1) + chr(6) + chr(170) + chr(255)
             self.ser.write(packet_leftThruster.encode("latin"))
             #right thruster going the other way
             packet_rightThruster = chr(1) + chr(7) + chr(104) + chr(255)
@@ -38,7 +38,7 @@ class Comms:
 
         if (self.command == "RightJoyLeft"):  
             #joystick has been moved to the left - code right thruster to move
-            packet_rightThruster = chr(1) + chr(6) + chr(150) + chr(255)
+            packet_rightThruster = chr(1) + chr(6) + chr(170) + chr(255)
             self.ser.write(packet_rightThruster.encode("latin"))
             #left thruster goes the other way
             packet_leftThruster = chr(1) + chr(7) + chr(104) + chr(255)
@@ -92,3 +92,4 @@ class Comms:
 test = Comms("/dev/tty.usbserial-1110", 9600)
 while True:
     test.run()
+
