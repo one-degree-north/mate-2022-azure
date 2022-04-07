@@ -128,7 +128,6 @@ void loop() {
           motR.writeMicroseconds(1500);
           motL.writeMicroseconds(1500);
         }
-      else if
     }
   }
  reportIMUData();
