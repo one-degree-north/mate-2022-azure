@@ -5,28 +5,44 @@ import logging
 import sys
 import os
 
+from time import sleep
+
+from threading import Thread
+
 from gui.ui import AzureUI
 
-app = QApplication([])
+def ok_thread():
+    return None
 
-app.setWindowIcon(QIcon('gui/icon.png'))
+def gui_thread():
+    app = QApplication([])
 
-window = AzureUI()
-window.show()
+    app.setWindowIcon(QIcon('gui/icon.png'))
 
-# Setup 
-logging.info('Starting up Azure UI...')
+    window = AzureUI()
+    window.show()
 
-# Create "captures" directory
-try:
-    os.mkdir('captures')
-    logging.warning('No captures directory detected; one has been generated for you!')
-except FileExistsError:
-    pass
+    # Setup 
+    logging.info('Starting up Azure UI...')
 
-logging.info('Images are saved under the "captures" directory in the format "d-m-y_H:M:S"')
+    # Create "captures" directory
+    try:
+        os.mkdir('captures')
+        logging.warning('No captures directory detected; one has been generated for you!')
+    except FileExistsError:
+        pass
 
-logging.info('Azure UI has loaded sucessfully\n\n')
-print('\033[92m\033[1mAzure UI has loaded sucessfully\033[0m')
+    logging.info('Images are saved under the "captures" directory in the format "d-m-y_H:M:S"')
 
-sys.exit(app.exec())
+    logging.info('Azure UI has loaded sucessfully\n\n')
+    print('\033[92m\033[1mAzure UI has loaded sucessfully\033[0m')
+
+    sys.exit(app.exec())
+
+#t1 = Thread(target=ok_thread)
+t2 = Thread(target=gui_thread)
+# gui_thread()
+
+# t1.start()
+t2.start()
+# gui_thread()
