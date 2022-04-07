@@ -118,6 +118,7 @@ void loop() {
           motFL.writeMicroseconds(1500);
           motBR.writeMicroseconds(1500);
           motBL.writeMicroseconds(1500);
+        }
       }
       else if (motor == 14){
           motFR.writeMicroseconds(1500);
@@ -127,7 +128,7 @@ void loop() {
           motR.writeMicroseconds(1500);
           motL.writeMicroseconds(1500);
         }
-      }
+      else if
     }
   }
  reportIMUData();
