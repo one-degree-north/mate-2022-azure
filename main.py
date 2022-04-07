@@ -82,8 +82,8 @@ class AzureUI(QMainWindow):
             self.active.setCurrentIndex(3)
         elif e.key() == Qt.Key_5:
             self.active.setCurrentIndex(4)
-        elif e.key() == Qt.Key_6:
-            self.active.setCurrentIndex(5)
+        # elif e.key() == Qt.Key_6:
+        #     self.active.setCurrentIndex(5)
         elif e.key() == Qt.Key_L:
             if self.menu.logs.isVisible():
                 self.menu.logs.hide()

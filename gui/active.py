@@ -4,7 +4,7 @@ from PyQt5.QtCore import Qt
 from gui.tabs.home import HomeTab
 from gui.tabs.grid import Grid
 from gui.tabs.camera import Camera 
-from gui.tabs.viewer import ImageViewer
+# from gui.tabs.viewer import ImageViewer
 from gui.tabs.logs import ConsoleTab
 
 import yaml
@@ -18,7 +18,7 @@ class ActiveTab(QTabWidget):
         self.grid_tab = Grid(settings['camera-port-1'], settings['camera-port-2'])
         self.cam1_tab = Camera(settings['camera-port-1'])
         self.cam2_tab = Camera(settings['camera-port-2'])
-        self.viewer_tab = ImageViewer()
+        # self.viewer_tab = ImageViewer()
         self.console_tab = ConsoleTab()
 
 
@@ -26,7 +26,7 @@ class ActiveTab(QTabWidget):
         self.addTab(self.grid_tab, 'Camera Grid')
         self.addTab(self.cam1_tab, 'Camera 1')
         self.addTab(self.cam2_tab, 'Camera 2')
-        self.addTab(self.viewer_tab, 'Image Viewer')
+        # self.addTab(self.viewer_tab, 'Image Viewer')
         self.addTab(self.console_tab, 'Console')
 
         self.setTabPosition(QTabWidget.West)
