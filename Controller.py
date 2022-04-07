@@ -136,9 +136,11 @@ def run(self):
                     if self.open == True:
                         self.packet_servoGrab = chr(1) + chr(9) + chr(12) + chr(255)
                         self.comms.write(self.packet_servoGrab.encode("latin"))
+                        self.open = False
                     else:
                         self.packet_servoGrab = chr(1) + chr(9) + chr(11) + chr(255)
                         self.comms.write(self.packet_servoGrab.encode("latin"))
+                        self.open = True
                 
                 '''
                 elif event.button == "B":
