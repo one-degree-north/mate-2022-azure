@@ -35,6 +35,29 @@ void setup() {
   while (!Serial);
 }
 
+void reportIMUData() {
+    sensors_event_t event; 
+    bno.getEvent(&event);
+    sensors_event_t orientation, gyro, accel;
+    bno.getEvent(&orientation, Adafruit_BNO055::VECTOR_EULER);
+    bno.getEvent(&gyro, Adafruit_BNO055::VECTOR_GYROSCOPE);
+    bno.getEvent(&accel, Adafruit_BNO055::VECTOR_LINEARACCEL);
+
+    Serial.write(0xA4);
+  
+    Serial.write(orientation.orientation.x);
+    Serial.write(orientation.orientation.y);
+    Serial.write(orientation.orientation.z);
+    Serial.write(gyro.gyro.x);
+    Serial.write(gyro.gyro.y);
+    Serial.write(gyro.gyro.z);
+    Serial.write(accel.acceleration.x);
+    Serial.write(accel.acceleration.y);
+    Serial.write(accel.acceleration.z);
+
+    Serial.write(0x56);
+}
+
 void loop() {
   if(Serial.available() >= 4){
     byte header = Serial.read();
@@ -44,6 +67,16 @@ void loop() {
       byte footer = Serial.read();
 
       if (footer != 255) return;
+      
+      if (m == 0){
+        m = 1500;
+      }
+      else if (m < 0){ 
+        m = map(m, -127, -1, 1000, 1499);
+      }
+      else if (m > 0){
+        m = map(m, 1, 127, 1501, 2000);
+      }
       
       if (m == 0){
         m = 1500;
@@ -102,4 +135,5 @@ void loop() {
       }
     }
   }
+ reportIMUData();
 }
