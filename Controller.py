@@ -38,6 +38,8 @@ def send_value(self,value):
         if self.value<0:
             self.value = 255+self.value
         return self.value
+    
+
      
 def run(self):
     while True:
@@ -129,9 +131,14 @@ def run(self):
 
                 elif event.button == "A":
                     self.comms.packetControls.packet[5] = True
-                    print("Claw grabs")
-                    self.packet_servoGrab = chr(1) + chr(9) + chr(12) + chr(255)
-                    self.comms.write(self.packet_servoGrab.encode("latin"))
+                    #A is unpressed - 12 is open, 11 is closed
+                    self.open = True
+                    if self.open == True:
+                        self.packet_servoGrab = chr(1) + chr(9) + chr(12) + chr(255)
+                        self.comms.write(self.packet_servoGrab.encode("latin"))
+                    else:
+                        self.packet_servoGrab = chr(1) + chr(9) + chr(11) + chr(255)
+                        self.comms.write(self.packet_servoGrab.encode("latin"))
                 
                 '''
                 elif event.button == "B":
@@ -159,13 +166,14 @@ def run(self):
                 elif event.button == "DPAD_DOWN":
                     print("Remain on Camera 4")
                 
+                '''
                 elif event.button == "A":
                     self.comms.packetControls.packet[5] = True
                     print("Claw stops grabbing")
                     self.packet_servoGrab_off = chr(1) + chr(9) + chr(11) + chr(255)
                     self.comms.write(self.packet_servoGrab_off.encode("latin"))
                 
-                '''
+               
                 elif event.button == "B":
                     self.comms.packetControl.packet[5] = False
                     print("Claw has been released")
