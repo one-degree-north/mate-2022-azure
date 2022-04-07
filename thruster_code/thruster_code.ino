@@ -8,14 +8,9 @@ Servo motBL;
 Servo motFL;
 Servo motR;
 Servo motL;
-Servo claw_rotate;
-Servo claw_grab;  
 
 void setup() {
   Serial.begin(9600);
-  
-  claw_rotate.attach(13);
-  claw_grab.attach(14);
   
   motFR.attach(A5, 1000, 2000);  
   motBR.attach(A2, 1000, 2000);
