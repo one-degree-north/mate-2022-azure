@@ -1,11 +1,11 @@
 from PyQt5.QtWidgets import QTabWidget
 from PyQt5.QtCore import Qt
 
-from tabs.home import HomeTab
-from tabs.grid import Grid
-from tabs.camera import Camera 
-from tabs.viewer import ImageViewer
-from tabs.logs import ConsoleTab
+from gui.tabs.home import HomeTab
+from gui.tabs.grid import Grid
+from gui.tabs.camera import Camera 
+from gui.tabs.viewer import ImageViewer
+from gui.tabs.logs import ConsoleTab
 
 import yaml
 

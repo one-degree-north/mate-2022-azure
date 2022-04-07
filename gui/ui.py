@@ -2,8 +2,8 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QHBoxLayout, QWidget
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt
 
-from menu import MenuBar
-from active import ActiveTab
+from gui.menu import MenuBar
+from gui.active import ActiveTab
 
 import serial
 
@@ -158,27 +158,27 @@ class AzureUI(QMainWindow):
     #         packet = chr(1) + chr(13) + chr(0) + chr(255)
     #         self.ser.write(packet.encode("latin"))
 
-if __name__ == '__main__':
-    app = QApplication([])
+# if __name__ == '__main__':
+#     app = QApplication([])
 
-    app.setWindowIcon(QIcon('gui/icon.png'))
+#     app.setWindowIcon(QIcon('gui/icon.png'))
 
-    window = AzureUI()
-    window.show()
+#     window = AzureUI()
+#     window.show()
 
-    # Setup 
-    logging.info('Starting up Azure UI...')
+#     # Setup 
+#     logging.info('Starting up Azure UI...')
 
-    # Create "captures" directory
-    try:
-        os.mkdir('captures')
-        logging.warning('No captures directory detected; one has been generated for you!')
-    except FileExistsError:
-        pass
+#     # Create "captures" directory
+#     try:
+#         os.mkdir('captures')
+#         logging.warning('No captures directory detected; one has been generated for you!')
+#     except FileExistsError:
+#         pass
 
-    logging.info('Images are saved under the "captures" directory in the format "d-m-y_H:M:S"')
+#     logging.info('Images are saved under the "captures" directory in the format "d-m-y_H:M:S"')
 
-    logging.info('Azure UI has loaded sucessfully\n\n')
-    print('\033[92m\033[1mAzure UI has loaded sucessfully\033[0m')
+#     logging.info('Azure UI has loaded sucessfully\n\n')
+#     print('\033[92m\033[1mAzure UI has loaded sucessfully\033[0m')
 
-    sys.exit(app.exec())
+#     sys.exit(app.exec())

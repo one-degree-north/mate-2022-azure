@@ -20,7 +20,7 @@ class ImageViewer(QWidget):
         self.label = QLabel()
         # self.label.setGeometry(0,0,640,480)
 
-        self.label.resizeEvent = self.label_resize
+        self.resizeEvent = self.label_resize
     
         # self.cv_img = cv2.imread(self.images[0])
         # self.qt_img = self.convert_cv_qt(self.cv_img)
@@ -49,7 +49,7 @@ class ImageViewer(QWidget):
         
 
     def label_resize(self, resizeEvent: QResizeEvent):
-        self.display_width, self.display_height = self.label.width(), self.label.height()
+        self.display_width, self.display_height = self.width(), self.height()
 
     def update_captures(self):
         images = []
