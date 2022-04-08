@@ -25,7 +25,7 @@ class AzureUI(QMainWindow):
     def __init__(self, port: str, baud_rate: int):
         super().__init__()
         
-        self.open = True
+        self.claw_closed = True
         self.controllers = (
             Controller((150., 100.), None),
             Controller((450., 100.), None),
@@ -127,14 +127,14 @@ class AzureUI(QMainWindow):
             self.ser.write(self.kill_packet.encode("latin"))
         elif e.key() == Qt.Key_X:
             if self.open == True:
-                # claw open
-                self.value_servo = 12
+                # claw closed
+                self.value_servo = 11
                 self.packet_servo = chr(1) + chr(9) + chr(self.value_servo) + chr(255)
                 self.ser.write(self.packet_servo.encode("latin"))
                 self.open = False
             else:
-                # claw close
-                self.value_servo = 11
+                # claw open
+                self.value_servo = 12
                 self.packet_servo = chr(1) + chr(9) + chr(self.value_servo) + chr(255)
                 self.ser.write(self.packet_servo.encode("latin"))
                 self.open = True
