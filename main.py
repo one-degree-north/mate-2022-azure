@@ -20,6 +20,10 @@ from datetime import datetime
 class AzureUI(QMainWindow):
     def __init__(self, port: str, baud_rate: int):
         super().__init__()
+        
+        self.claw_closed = True
+        self.servo_closed = chr(1) + chr(9) + chr(11) + chr(255)
+        self.ser.write(self.packet_servo.encode("latin"))
 
         self.setWindowTitle('Azure UI')
         self.setStyleSheet('background: rgb(24, 40, 61)')
@@ -89,11 +93,11 @@ class AzureUI(QMainWindow):
             self.packet_rightThruster = chr(1) + chr(7) + chr(self.value_rightMot) + chr(255)
             self.ser.write(self.packet_rightThruster.encode("latin"))
         elif e.key() == Qt.Key_W:
-            self.value_motor = 200
+            self.value_motor = 127
             self.packet_up = chr(1) + chr(13) + chr(self.value_motor) + chr(255)
             self.ser.write(self.packet_up.encode("latin"))
         elif e.key() == Qt.Key_S:
-            self.value_motor = 100
+            self.value_motor = 254
             self.packet_down = chr(1) + chr(13) + chr(self.value_motor) + chr(255)
             self.ser.write(self.packet_down.encode("latin"))
         elif e.key() == Qt.Key_Up:
@@ -113,6 +117,19 @@ class AzureUI(QMainWindow):
         elif e.key() == Qt.Key_Escape:
             self.kill_packet = chr(1) + chr(14) + chr(127) + chr(255)
             self.ser.write(self.kill_packet.encode("latin"))
+        elif e.key() == Qt.Key_X:
+            if self.claw_closed == True:
+                # claw should open now
+                self.value_servo = 12
+                self.packet_servo = chr(1) + chr(9) + chr(self.value_servo) + chr(255)
+                self.ser.write(self.packet_servo.encode("latin"))
+                self.claw_closed = False
+            else:
+                # claw should close now
+                self.value_servo = 11
+                self.packet_servo = chr(1) + chr(9) + chr(self.value_servo) + chr(255)
+                self.ser.write(self.packet_servo.encode("latin"))
+                self.open = True
     
     def keyReleaseEvent(self, e):
         if e.key() == Qt.Key_A or e.key() == Qt.Key_D:
