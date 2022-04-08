@@ -124,6 +124,20 @@ class AzureUI(QMainWindow):
         elif e.key() == Qt.Key_Escape:
             self.kill_packet = chr(1) + chr(14) + chr(127) + chr(255)
             self.ser.write(self.kill_packet.encode("latin"))
+        elif e.key() == Qt.Key_X:
+            self.open = True
+            if self.open == True:
+                # claw open
+                self.value_servo = 12
+                self.packet_servo = chr(1) + chr(9) + chr(self.value_servo) + chr(255)
+                self.ser.write(self.packet_servo.encode("latin"))
+                self.open = False
+            else:
+                # claw close
+                self.value_servo = 11
+                self.packet_servo = chr(1) + chr(9) + chr(self.value_servo) + chr(255)
+                self.ser.write(self.packet_servo.encode("latin"))
+                self.open = True
     
     def keyReleaseEvent(self, e):
         if e.key() == Qt.Key_A or e.key() == Qt.Key_D:
