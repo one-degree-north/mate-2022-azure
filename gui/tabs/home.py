@@ -24,9 +24,6 @@ class HomeTab(QWidget):
 
         self.layout.addWidget(self.title)
         self.layout.addWidget(self.view_box)
-        # self.layout.addWidget(ViewBox(parent), 1,1)
-
-        # self.layout.setSpacing(20)
 
         self.setLayout(self.layout)
 
@@ -48,7 +45,6 @@ class Title(QLabel):
             }
         """)
 
-        # self.setFixedSize(450, 80)
         self.setFixedHeight(70)
         self.setAlignment(Qt.AlignCenter)
         
@@ -80,8 +76,8 @@ class View(GLViewWidget):
 
         self.parent = parent
 
-        self.setCameraPosition(distance=400)
-        self.pan(dx=-160, dy=0, dz=0)
+        self.setCameraPosition(distance=20)
+        self.pan(dx=-12, dy=-12, dz=0)
         self.setBackgroundColor((17, 28, 43))
 
         self.stl = mesh.Mesh.from_file('gui/rov.stl')
