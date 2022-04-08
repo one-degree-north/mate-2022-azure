@@ -24,8 +24,8 @@ from datetime import datetime
 class AzureUI(QMainWindow):
     def __init__(self, port: str, baud_rate: int):
         super().__init__()
+        
         self.open = True
-
         self.controllers = (
             Controller((150., 100.), None),
             Controller((450., 100.), None),
