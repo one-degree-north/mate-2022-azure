@@ -100,11 +100,11 @@ class AzureUI(QMainWindow):
             self.packet_rightThruster = chr(1) + chr(7) + chr(self.value_rightMot) + chr(255)
             self.ser.write(self.packet_rightThruster.encode("latin"))
         elif e.key() == Qt.Key_W:
-            self.value_motor = 200
+            self.value_motor = 127
             self.packet_up = chr(1) + chr(13) + chr(self.value_motor) + chr(255)
             self.ser.write(self.packet_up.encode("latin"))
         elif e.key() == Qt.Key_S:
-            self.value_motor = 100
+            self.value_motor = 254
             self.packet_down = chr(1) + chr(13) + chr(self.value_motor) + chr(255)
             self.ser.write(self.packet_down.encode("latin"))
         elif e.key() == Qt.Key_Up:
