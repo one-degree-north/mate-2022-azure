@@ -126,12 +126,12 @@ class AzureUI(QMainWindow):
             self.kill_packet = chr(1) + chr(14) + chr(127) + chr(255)
             self.ser.write(self.kill_packet.encode("latin"))
         elif e.key() == Qt.Key_X:
-            if self.open == True:
+            if self.claw_closed == True:
                 # claw closed
                 self.value_servo = 11
                 self.packet_servo = chr(1) + chr(9) + chr(self.value_servo) + chr(255)
                 self.ser.write(self.packet_servo.encode("latin"))
-                self.open = False
+                self.claw_closed = False
             else:
                 # claw open
                 self.value_servo = 12
