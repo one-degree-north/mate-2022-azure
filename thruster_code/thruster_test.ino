@@ -32,7 +32,6 @@ void setup() {
   delayMicroseconds(5000);
   while (!Serial);
 }
-
 void loop() {
   if(Serial.available() >= 4){
     byte header = Serial.read();
