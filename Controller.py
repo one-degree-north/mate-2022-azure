@@ -27,7 +27,7 @@ class Controller:
         self.l_shoulder_pos = (self.center[0] - 90, self.center[1] - 70)
         self.r_shoulder_pos = (self.center[0] + 90, self.center[1] - 70)
 
-controllers = (Controller((150., 100.), None),
+    controllers = (Controller((150., 100.), None),
                Controller((450., 100.), None),
                Controller((150., 300.), None),
                Controller((450., 300.), None))
