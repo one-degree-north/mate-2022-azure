@@ -26,6 +26,9 @@ class AzureUI(QMainWindow):
         super().__init__()
         
         self.claw_closed = True
+        self.servo_closed = chr(1) + chr(9) + chr(11) + chr(255)
+        self.ser.write(self.packet_servo.encode("latin"))
+        
         self.controllers = (
             Controller((150., 100.), None),
             Controller((450., 100.), None),
