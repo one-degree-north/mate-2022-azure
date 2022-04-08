@@ -84,6 +84,7 @@ void loop() {
       }   
       if (motor == 2){
         motFR.writeMicroseconds(m * 10);
+        
       } 
       else if (motor == 3){
         motFL.writeMicroseconds(m * 10);
