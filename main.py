@@ -24,6 +24,7 @@ from datetime import datetime
 class AzureUI(QMainWindow):
     def __init__(self, port: str, baud_rate: int):
         super().__init__()
+        self.open = True
 
         self.controllers = (
             Controller((150., 100.), None),
@@ -125,7 +126,6 @@ class AzureUI(QMainWindow):
             self.kill_packet = chr(1) + chr(14) + chr(127) + chr(255)
             self.ser.write(self.kill_packet.encode("latin"))
         elif e.key() == Qt.Key_X:
-            self.open = True
             if self.open == True:
                 # claw open
                 self.value_servo = 12
