@@ -92,33 +92,33 @@ class AzureUI(QMainWindow):
             except cv2.error:
                 logging.error('Camera has not yet loaded, please wait')
         elif e.key() == Qt.Key_A:
-            self.value_rightMot = 127
+            self.value_rightMot = 200
             self.packet_rightThruster = chr(1) + chr(7) + chr(self.value_rightMot) + chr(255)
             self.ser.write(self.packet_rightThruster.encode("latin"))
         elif e.key() == Qt.Key_D:
-            self.value_rightMot = 254
+            self.value_rightMot = 100
             self.packet_rightThruster = chr(1) + chr(7) + chr(self.value_rightMot) + chr(255)
             self.ser.write(self.packet_rightThruster.encode("latin"))
         elif e.key() == Qt.Key_W:
-            self.value_motor = 127
+            self.value_motor = 200
             self.packet_up = chr(1) + chr(13) + chr(self.value_motor) + chr(255)
             self.ser.write(self.packet_up.encode("latin"))
         elif e.key() == Qt.Key_S:
-            self.value_motor = 254
+            self.value_motor = 100
             self.packet_down = chr(1) + chr(13) + chr(self.value_motor) + chr(255)
             self.ser.write(self.packet_down.encode("latin"))
         elif e.key() == Qt.Key_Up:
-            self.value_forward = 254
+            self.value_forward = 100
             self.packet_forward = chr(1) + chr(2) + chr(self.value_forward) + chr(255)
             self.ser.write(self.packet_forward.encode("latin"))
-            self.value_backward = 127
+            self.value_backward = 200
             self.packet_backward = chr(1) + chr(3) + chr(self.value_backward) + chr(255)
             self.ser.write(self.packet_backward.encode("latin"))
         elif e.key() == Qt.Key_Down:
-            self.value_forward = 127
+            self.value_forward = 200
             self.packet_forward = chr(1) + chr(2) + chr(self.value_forward) + chr(255)
             self.ser.write(self.packet_forward.encode("latin"))
-            self.value_backward = 254
+            self.value_backward = 100
             self.packet_backward = chr(1) + chr(3) + chr(self.value_backward) + chr(255)
             self.ser.write(self.packet_backward.encode("latin"))
         elif e.key() == Qt.Key_Escape:
