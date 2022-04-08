@@ -21,6 +21,10 @@ class AzureUI(QMainWindow):
     def __init__(self, port: str, baud_rate: int):
         super().__init__()
         
+        self.ser = serial.Serial(port, baud_rate)
+        self.ser.close()
+        self.ser.open()
+        
         self.claw_closed = True
         self.servo_closed = chr(1) + chr(9) + chr(11) + chr(255)
         self.ser.write(self.packet_servo.encode("latin"))
@@ -42,10 +46,6 @@ class AzureUI(QMainWindow):
 
         self.menu.logs.hide()
         self.resize(800, 600)
-        
-        self.ser = serial.Serial(port, baud_rate)
-        self.ser.close()
-        self.ser.open()
 
     def keyPressEvent(self, e):
         if e.key() == Qt.Key_QuoteLeft:
