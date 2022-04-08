@@ -26,9 +26,6 @@ class AzureUI(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        self.backend_thread = Thread(target=self.run_controller)
-        self.backend_thread.start()
-
         self.controllers = (
             Controller((150., 100.), None),
             Controller((450., 100.), None),
@@ -243,4 +240,9 @@ if __name__ == '__main__':
     logging.info('Azure UI has loaded sucessfully\n\n')
     print('\033[92m\033[1mAzure UI has loaded sucessfully\033[0m')
 
+    # Backend
+    backend_thread = Thread(target=window.run_controller)
+    backend_thread.start()
+
+    # Start UI
     sys.exit(app.exec())
