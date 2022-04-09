@@ -127,9 +127,9 @@ class AzureUI(QMainWindow):
         elif e.key() == Qt.Key_X:
             if self.claw_closed == True:
                 # claw should open now
-                self.value_servo = 12
-                self.packet_servo = chr(1) + chr(9) + chr(self.value_servo) + chr(255)
-                self.ser.write(self.packet_servo.encode("latin"))
+                self.value_servoGrab = 12
+                self.packet_servoGrab = chr(1) + chr(9) + chr(self.value_servoGrab) + chr(255)
+                self.ser.write(self.packet_servoGrab.encode("latin"))
                 self.claw_closed = False
             else:
                 # claw should close now
@@ -137,6 +137,16 @@ class AzureUI(QMainWindow):
                 self.packet_servo = chr(1) + chr(9) + chr(self.value_servo) + chr(255)
                 self.ser.write(self.packet_servo.encode("latin"))
                 self.open = True
+        elif e.key() == Qt.Key_C:
+            #servoRotate goes left
+            self.value_servoRotate = 15
+            self.packet_servoRotate = chr(1) + chr(8) + chr(self.value_servoRotate) + chr(255)
+            self.ser.write(self.packet_servoRotate.encode("latin"))
+        elif e.key() == Qt.Key_V:
+            #servoRotate goes right
+            self.value_servoRotate = 16
+            self.packet_servoRotate = chr(1) + chr(8) + chr(self.value_servoRotate) + chr(255)
+            self.ser.write(self.packet_servoRotate)
     
     def keyReleaseEvent(self, e):
         if e.key() == Qt.Key_W or e.key() == Qt.Key_S:
@@ -155,7 +165,12 @@ class AzureUI(QMainWindow):
             self.value_stop = 150
             self.packet_stop = chr(1) + chr(13) + chr(self.value_stop) + chr(255)
             self.ser.write(self.packet_stop.encode("latin"))
-
+       elif e.key() == Qt.Key_C or Qt.Key_V:
+            #stop servo
+            self.value_servoRotate_stop = 17
+            self.packet_servoRotate = chr(1) + chr(8) + chr(self.value_servoRotate_stop) + chr(255)
+            self.ser.write(self.packet_servoRotate.encode("latin"))
+        
 if __name__ == '__main__':
     app = QApplication([])
 
