@@ -93,3 +93,6 @@ class View(GLViewWidget):
 
     def keyPressEvent(self, e):
         self.parent.keyPressEvent(e)
+
+    def keyReleaseEvent(self, e):
+        self.parent.keyReleaseEvent(e)
