@@ -8,12 +8,14 @@ Servo motBL;
 Servo motFL;
 Servo motR;
 Servo motL;
-Servo claw_servo;
+Servo claw_grab;
+Servo claw_turn;
 
 void setup() {
   Serial.begin(9600);
   
-  claw_servo.attach(12);
+  claw_grab.attach(11, 0, 120);
+  claw_turn.attach(/add pin/, 0, 120);
   
   motFR.attach(A5, 1000, 2000);  
   motBR.attach(A2, 1000, 2000);
@@ -118,6 +120,16 @@ void loop() {
           motR.writeMicroseconds(1500);
           motL.writeMicroseconds(1500);
           Serial.print("Motors Kill");
+      }
+      else if (motor == 8){
+        if (m == 15){
+          claw_turn.write(0);
+          Serial.print("Ratate Left");
+        }
+          if (m == 16){
+          claw_turn.write(120);
+          Serial.print("Rotate Right");
+        }
       }
       else if (motor == 9){
         if (m == 11){
