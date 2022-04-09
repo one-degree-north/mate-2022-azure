@@ -123,12 +123,16 @@ void loop() {
       }
       else if (motor == 8){
         if (m == 15){
-          claw_turn.write(0);
+          claw_turn.write(-120);
           Serial.print("Ratate Left");
         }
-          if (m == 16){
+        else if (m == 16){
           claw_turn.write(120);
           Serial.print("Rotate Right");
+        } 
+        else if (m == 17){
+          claw_turn.write(0);
+          Serial.print("Rotate Right");       
         }
       }
       else if (motor == 9){
