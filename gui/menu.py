@@ -2,7 +2,7 @@ from PyQt5.QtWidgets import QVBoxLayout, QWidget, QPushButton, QLabel
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QImage, QPixmap
 
-from gui.tabs.logs import MiniLogsWindow
+from gui.tabs.console import MiniLogsWindow
 
 import cv2
 

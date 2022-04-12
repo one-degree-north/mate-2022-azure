@@ -7,3 +7,4 @@ __pycache__
 
 # Does not upload captures to GitHub
 captures
+logs

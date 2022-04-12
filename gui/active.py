@@ -3,7 +3,7 @@ from PyQt5.QtCore import Qt
 
 from gui.tabs.home import HomeTab
 from gui.tabs.camera import Camera 
-from gui.tabs.logs import ConsoleTab
+from gui.tabs.console import ConsoleTab
 
 import yaml
 

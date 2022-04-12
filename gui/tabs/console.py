@@ -1,8 +1,10 @@
 from PyQt5.QtWidgets import QGridLayout, QVBoxLayout, QWidget, QPlainTextEdit, QDialog, QLineEdit, QLabel
 from PyQt5.QtCore import Qt
 
-import logging
+import os
+from datetime import datetime
 
+import logging
 
 class LoggerBox(logging.Handler):
     def __init__(self, parent):
@@ -49,6 +51,7 @@ class CommandLine(QLineEdit):
             }
         """)
 
+        self.controls_logging = False
         self.key_logging = False
 
         self.setPlaceholderText('"help" for commands')
@@ -76,9 +79,11 @@ class CommandLine(QLineEdit):
                 Commands:
                 help - shows this menu
                 return (++) - returns text to logs
+                save - save a transcript of the logs
                 exit - stops the program
 
-                key - toggles logging for keyboard presses (off by default)
+                controls - toggles key logging for control keys (off by default)
+                key - toggles key logging for keys that aren't controls (off by default)
 
 
                 Key:
@@ -94,10 +99,23 @@ class CommandLine(QLineEdit):
             else:
                 logging.info(' '.join(self.split_text[1:]))
 
+        elif self.split_text[0] == 'save':
+            timestamp = datetime.now().strftime(f'%d-%m-%y_%H:%M:%S.%f')[:-4]
+            logging.FileHandler(f'{timestamp}/ok.txt')
+
         elif self.split_text[0] == 'exit':
             print('\033[93m\033[1mAzure UI has stopped sucessfully\033[0m')
+
             exit()
 
+
+        elif self.split_text[0] == 'controls':
+            if self.controls_logging:
+                self.controls_logging = False
+            else:
+                self.controls_logging = True
+
+            logging.info('Toggled key logging (controls)')
 
         elif self.split_text[0] == 'key':
             if self.key_logging:
@@ -105,7 +123,8 @@ class CommandLine(QLineEdit):
             else:
                 self.key_logging = True
 
-            logging.info('Toggled key logging')
+            logging.info('Toggled key logging (excluding controls)')
+
 
 
         # elif self.split_text[0] == 'ping':
@@ -133,14 +152,14 @@ class ConsoleTab(QWidget):
         """)
 
         self.logs = Logs()
-        self.textbox = CommandLine()
+        self.command_line = CommandLine()
 
 
         self.layout = QVBoxLayout()
 
 
         self.layout.addWidget(self.logs)
-        self.layout.addWidget(self.textbox)
+        self.layout.addWidget(self.command_line)
 
         self.layout.setSpacing(0)
 
