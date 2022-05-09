@@ -41,20 +41,20 @@ class MenuBar(QWidget):
         self.logs = MiniLogsWindow()
 
         # Tab buttons
-        self.menu_button = TabButton('Menu')
-        self.menu_button.clicked.connect(lambda: parent.active.setCurrentIndex(0))
+        # self.menu_button = TabButton('Menu')
+        # self.menu_button.clicked.connect(lambda: parent.active.setCurrentIndex(0))
 
         self.cam_button = TabButton('Camera')
-        self.cam_button.clicked.connect(lambda: parent.active.setCurrentIndex(1))
+        self.cam_button.clicked.connect(lambda: parent.active.setCurrentIndex(0))
 
         self.console_button = TabButton('Console')
-        self.console_button.clicked.connect(lambda: parent.active.setCurrentIndex(2))
+        self.console_button.clicked.connect(lambda: parent.active.setCurrentIndex(1))
 
         # Tab layout
         self.tabs = QWidget()
         self.tabs.layout = QVBoxLayout()
 
-        self.tabs.layout.addWidget(self.menu_button)
+        # self.tabs.layout.addWidget(self.menu_button)
         self.tabs.layout.addWidget(self.cam_button)
         self.tabs.layout.addWidget(self.console_button)
 
