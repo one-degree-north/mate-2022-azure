@@ -229,3 +229,5 @@ if __name__ == '__main__':
     print('\033[92m\033[1mAzure UI has loaded sucessfully\033[0m')
 
     sys.exit(app.exec())
+
+    window.active.cam_tab.thread.capture.release()
