@@ -79,8 +79,6 @@ class AzureUI(QMainWindow):
                 self.frame.layout.removeWidget(window.menu)
 
             logging.info('Toggled styled tabs')
-        # elif e.key() == Qt.Key_1:
-        #     self.active.setCurrentIndex(0)
         elif e.key() == Qt.Key_1:
             self.active.setCurrentIndex(0)
         elif e.key() == Qt.Key_2:
