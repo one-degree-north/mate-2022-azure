@@ -45,7 +45,7 @@ class AzureUI(QMainWindow):
         self.setCentralWidget(self.frame)
 
         self.menu.logs.hide()
-        self.resize(800, 600)
+        self.resize(600, 400)
 
         self.ui_controls = []
         self.bot_controls = []
