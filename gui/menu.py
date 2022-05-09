@@ -83,6 +83,7 @@ class TabButton(QPushButton):
                 color: rgb(210, 211, 210);
 
                 padding: 10px;
+                margin: 4px;
                 font: bold 20px;
 
                 border-radius: 10px
