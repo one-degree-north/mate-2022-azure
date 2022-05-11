@@ -83,6 +83,7 @@ class CommandLine(QLineEdit):
                 exit - stops the program
 
                 key - toggles key logging (off by default)
+                controls - toggles logging for ROV controls (off by default)
 
 
                 Key:
@@ -111,6 +112,14 @@ class CommandLine(QLineEdit):
                 self.key_logging = True
 
             logging.info('Toggled key logging')
+
+        elif self.split_text[0] == 'controls':
+            if self.controls_logging:
+                self.controls_logging = False
+            else:
+                self.controls_logging = True
+
+            logging.info('Toggled ROV controls logging')
 
 
 
