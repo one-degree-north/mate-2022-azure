@@ -164,8 +164,8 @@ class AzureUI(QMainWindow):
                 # self.ser.write(self.packet_servo.encode("latin"))
                 self.claw_closed = True
 
-        elif self.active.console_tab.command_line.key_logging and e.key() != Qt.Key_Return:
-            logging.debug(ascii(e.text()))
+        if self.active.console_tab.command_line.key_logging and e.key() != Qt.Key_Return:
+            logging.debug(f'Key pressed: {ascii(e.text())}')
 
 
     
