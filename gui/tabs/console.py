@@ -82,6 +82,8 @@ class CommandLine(QLineEdit):
                 save - save a transcript of the logs
                 exit - stops the program
 
+                list - lists all images in the "capture" directory
+
                 key - toggles key logging (off by default)
                 controls - toggles logging for ROV controls (off by default)
 
@@ -104,6 +106,10 @@ class CommandLine(QLineEdit):
 
             exit()
 
+        elif self.split_text[0] == 'list':
+            files = "\n".join([f for f in os.listdir('captures') if os.path.isfile(os.path.join('captures', f))])
+            logging.info(f'captures/\n{files}')
+
 
         elif self.split_text[0] == 'key':
             if self.key_logging:
@@ -120,14 +126,6 @@ class CommandLine(QLineEdit):
                 self.controls_logging = True
 
             logging.info('Toggled ROV controls logging')
-
-
-
-        # elif self.split_text[0] == 'ping':
-        #     pass
-        
-        # elif self.split_text[0] == 'clear':
-        #     pass
         
         else:
             logging.error(f'Command "{self.split_text[0]}" does not exist')
