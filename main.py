@@ -243,8 +243,6 @@ if __name__ == '__main__':
     except FileExistsError:
         pass
 
-    logging.info('Transcripts of the console are saved under the "logs" directory in the format "d-m-y_H:M:S" at the time of running the "save" command')
-
     ## Setup complete
     logging.info('Azure UI has loaded sucessfully\n\n')
     print('\033[92m\033[1mAzure UI has loaded sucessfully\033[0m')
