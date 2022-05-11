@@ -95,8 +95,7 @@ class AzureUI(QMainWindow):
                 filename = f'captures/{timestamp}.png'
                 cv2.imwrite(filename, self.active.cam_tab.image)
 
-                logging.info(f"""Captured: captures/{timestamp}
-                """)
+                logging.info(f'Captured: captures/{timestamp}')
             except cv2.error:
                 logging.error('Camera has not yet loaded, please wait')
 

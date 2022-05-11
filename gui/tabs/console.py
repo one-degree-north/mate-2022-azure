@@ -67,7 +67,7 @@ class CommandLine(QLineEdit):
 
         if self.split_text[0] == 'help':
             logging.info(f"""
-
+            
                 Hotkeys:
                 ` - shows/hides the tab bar (if styled)
                 t - toggles between styled tabs and regular tabs (styled by default)
@@ -108,7 +108,8 @@ class CommandLine(QLineEdit):
 
         elif self.split_text[0] == 'list':
             files = "\n".join([f for f in os.listdir('captures') if os.path.isfile(os.path.join('captures', f))])
-            logging.info(f'captures/\n{files}')
+            logging.info(f"""
+            captures/\n{files}""")
 
 
         elif self.split_text[0] == 'key':
