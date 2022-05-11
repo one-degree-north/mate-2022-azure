@@ -47,7 +47,7 @@ class CommandLine(QLineEdit):
                 background: rgb(235, 235, 235);
                 border-radius: 5px;
                 padding: 10px;
-                margin: 10px
+                margin: 12px
             }
         """)
 
