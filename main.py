@@ -167,10 +167,6 @@ class AzureUI(QMainWindow):
         elif self.active.console_tab.command_line.key_logging and e.key() != Qt.Key_Return:
             logging.debug(ascii(e.text()))
 
-            return
-        
-        if self.active.console_tab.command_line.controls_logging and e.key() != Qt.Key_Return:
-            logging.debug(ascii(e.text()))
 
     
     def keyReleaseEvent(self, e):
@@ -239,6 +235,9 @@ if __name__ == '__main__':
     logging.info('Azure UI has loaded sucessfully\n\n')
     print('\033[92m\033[1mAzure UI has loaded sucessfully\033[0m')
 
-    sys.exit(app.exec())
+    app.exec()
 
+    # Release camera
     window.active.cam_tab.thread.capture.release()
+
+    print('\033[93m\033[1mAzure UI has stopped sucessfully\033[0m')

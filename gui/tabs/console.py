@@ -82,8 +82,7 @@ class CommandLine(QLineEdit):
                 save - save a transcript of the logs
                 exit - stops the program
 
-                controls - toggles key logging for control keys (off by default)
-                key - toggles key logging for keys that aren't controls (off by default)
+                key - toggles key logging (off by default)
 
 
                 Key:
@@ -99,23 +98,11 @@ class CommandLine(QLineEdit):
             else:
                 logging.info(' '.join(self.split_text[1:]))
 
-        elif self.split_text[0] == 'save':
-            timestamp = datetime.now().strftime(f'%d-%m-%y_%H:%M:%S.%f')[:-4]
-            logging.FileHandler(f'{timestamp}/ok.txt')
-
         elif self.split_text[0] == 'exit':
             print('\033[93m\033[1mAzure UI has stopped sucessfully\033[0m')
 
             exit()
 
-
-        elif self.split_text[0] == 'controls':
-            if self.controls_logging:
-                self.controls_logging = False
-            else:
-                self.controls_logging = True
-
-            logging.info('Toggled key logging (controls)')
 
         elif self.split_text[0] == 'key':
             if self.key_logging:
@@ -123,7 +110,7 @@ class CommandLine(QLineEdit):
             else:
                 self.key_logging = True
 
-            logging.info('Toggled key logging (excluding controls)')
+            logging.info('Toggled key logging')
 
 
 
