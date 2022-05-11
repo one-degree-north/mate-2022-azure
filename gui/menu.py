@@ -75,6 +75,8 @@ class TabButton(QPushButton):
     def __init__(self, name):
         super().__init__(name)
 
+        self.setFocusPolicy(Qt.NoFocus)
+
         self.setStyleSheet("""
             QPushButton {
                 background: qlineargradient(
