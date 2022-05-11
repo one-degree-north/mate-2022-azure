@@ -25,7 +25,7 @@ class AzureUI(QMainWindow):
         # self.ser.close()
         # self.ser.open()
         
-        # self.claw_closed = True
+        self.claw_closed = True
         # self.servo_closed = chr(1) + chr(9) + chr(11) + chr(255)
         # self.ser.write(self.servo_closed.encode("latin"))
 
@@ -101,55 +101,68 @@ class AzureUI(QMainWindow):
                 logging.error('Camera has not yet loaded, please wait')
 
 
-    #     elif e.key() == Qt.Key_A:
-    #         self.value_rightMot = 170
-    #         self.packet_rightThruster = chr(1) + chr(7) + chr(self.value_rightMot) + chr(255)
-    #         self.ser.write(self.packet_rightThruster.encode("latin"))
-    #     elif e.key() == Qt.Key_D:
-    #         self.value_rightMot = 130
-    #         self.packet_rightThruster = chr(1) + chr(7) + chr(self.value_rightMot) + chr(255)
-    #         self.ser.write(self.packet_rightThruster.encode("latin"))
-    #     elif e.key() == Qt.Key_W:
-    #         self.value_motor = 127
-    #         self.packet_up = chr(1) + chr(13) + chr(self.value_motor) + chr(255)
-    #         self.ser.write(self.packet_up.encode("latin"))
-    #     elif e.key() == Qt.Key_S:
-    #         self.value_motor = 254
-    #         self.packet_down = chr(1) + chr(13) + chr(self.value_motor) + chr(255)
-    #         self.ser.write(self.packet_down.encode("latin"))
-    #     elif e.key() == Qt.Key_Up:
-    #         self.value_forward = 130
-    #         self.packet_forward = chr(1) + chr(2) + chr(self.value_forward) + chr(255)
-    #         self.ser.write(self.packet_forward.encode("latin"))
-    #         self.value_backward = 170
-    #         self.packet_backward = chr(1) + chr(3) + chr(self.value_backward) + chr(255)
-    #         self.ser.write(self.packet_backward.encode("latin"))
-    #     elif e.key() == Qt.Key_Down:
-    #         self.value_forward = 170
-    #         self.packet_forward = chr(1) + chr(2) + chr(self.value_forward) + chr(255)
-    #         self.ser.write(self.packet_forward.encode("latin"))
-    #         self.value_backward = 130
-    #         self.packet_backward = chr(1) + chr(3) + chr(self.value_backward) + chr(255)
-    #         self.ser.write(self.packet_backward.encode("latin"))
-    #     elif e.key() == Qt.Key_Escape:
-    #         self.kill_packet = chr(1) + chr(14) + chr(127) + chr(255)
-    #         self.ser.write(self.kill_packet.encode("latin"))
-    #     elif e.key() == Qt.Key_X:
-    #         print('x press')
-    #         if self.claw_closed == True:
-    #             # claw should open now
-    #             print('open')
-    #             self.value_servo = 12
-    #             self.packet_servo = chr(1) + chr(9) + chr(self.value_servo) + chr(255)
-    #             self.ser.write(self.packet_servo.encode("latin"))
-    #             self.claw_closed = False
-    #         else:
-    #             print('close')
-    #             # claw should close now
-    #             self.value_servo = 11
-    #             self.packet_servo = chr(1) + chr(9) + chr(self.value_servo) + chr(255)
-    #             self.ser.write(self.packet_servo.encode("latin"))
-    #             self.claw_closed = True
+        elif e.key() == Qt.Key_A:
+            # self.value_rightMot = 170
+            # self.packet_rightThruster = chr(1) + chr(7) + chr(self.value_rightMot) + chr(255)
+            # self.ser.write(self.packet_rightThruster.encode("latin"))
+            print('press a')
+        elif e.key() == Qt.Key_D:
+            # self.value_rightMot = 130
+            # self.packet_rightThruster = chr(1) + chr(7) + chr(self.value_rightMot) + chr(255)
+            # self.ser.write(self.packet_rightThruster.encode("latin"))
+
+            print('press d')
+        elif e.key() == Qt.Key_W:
+            # self.value_motor = 127
+            # self.packet_up = chr(1) + chr(13) + chr(self.value_motor) + chr(255)
+            # self.ser.write(self.packet_up.encode("latin"))
+
+            print('press w')
+        elif e.key() == Qt.Key_S:
+            # self.value_motor = 254
+            # self.packet_down = chr(1) + chr(13) + chr(self.value_motor) + chr(255)
+            # self.ser.write(self.packet_down.encode("latin"))
+
+            print('press s')
+        elif e.key() == Qt.Key_Up:
+            # self.value_forward = 130
+            # self.packet_forward = chr(1) + chr(2) + chr(self.value_forward) + chr(255)
+            # self.ser.write(self.packet_forward.encode("latin"))
+            # self.value_backward = 170
+            # self.packet_backward = chr(1) + chr(3) + chr(self.value_backward) + chr(255)
+            # self.ser.write(self.packet_backward.encode("latin"))
+
+            print('press up')
+        elif e.key() == Qt.Key_Down:
+            # self.value_forward = 170
+            # self.packet_forward = chr(1) + chr(2) + chr(self.value_forward) + chr(255)
+            # self.ser.write(self.packet_forward.encode("latin"))
+            # self.value_backward = 130
+            # self.packet_backward = chr(1) + chr(3) + chr(self.value_backward) + chr(255)
+            # self.ser.write(self.packet_backward.encode("latin"))
+
+            print('press down')
+        elif e.key() == Qt.Key_Escape:
+            # self.kill_packet = chr(1) + chr(14) + chr(127) + chr(255)
+            # self.ser.write(self.kill_packet.encode("latin"))
+
+            print('press esc')
+        elif e.key() == Qt.Key_X:
+            print('x press')
+            if self.claw_closed:
+                # claw should open now
+                print('open')
+                # self.value_servo = 12
+                # self.packet_servo = chr(1) + chr(9) + chr(self.value_servo) + chr(255)
+                # self.ser.write(self.packet_servo.encode("latin"))
+                self.claw_closed = False
+            else:
+                print('close')
+                # claw should close now
+                # self.value_servo = 11
+                # self.packet_servo = chr(1) + chr(9) + chr(self.value_servo) + chr(255)
+                # self.ser.write(self.packet_servo.encode("latin"))
+                self.claw_closed = True
 
         elif self.active.console_tab.command_line.key_logging and e.key() != Qt.Key_Return:
             logging.debug(ascii(e.text()))
@@ -160,24 +173,24 @@ class AzureUI(QMainWindow):
             logging.debug(ascii(e.text()))
 
     
-    # def keyReleaseEvent(self, e):
-    #     print(e.text())
-    #     if e.key() == Qt.Key_A or e.key() == Qt.Key_D:
-    #         print('a/d rel')
-    #         self.value_rightMot = 150
-    #         self.packet_rightThruster = chr(1) + chr(7) + chr(self.value_rightMot) + chr(255)
-    #         self.ser.write(self.packet_rightThruster.encode("latin"))
-    #     elif e.key() == Qt.Key_W or e.key() == Qt.Key_S:
-    #         print('w/s rel')
-    #         self.value_motor = 150
-    #         self.packet_motor = chr(1) + chr(13) + chr(self.value_motor) + chr(255)
-    #         self.ser.write(self.packet_motor.encode("latin"))
-    #     elif e.key() == Qt.Key_Up or e.key() == Qt.Key_Down:
-    #         self.value_motor = 150
-    #         self.packet_motor_forward = chr(1) + chr(2) + chr(self.value_motor) + chr(255)
-    #         self.ser.write(self.packet_motor_forward.encode("latin"))
-    #         self.packet_motor_backward = chr(1) + chr(3) + chr(self.value_motor) + chr(255)
-    #         self.ser.write(self.packet_motor_backward.encode("latin"))
+    def keyReleaseEvent(self, e):
+        if e.key() == Qt.Key_A or e.key() == Qt.Key_D:
+            print('a/d rel')
+            # self.value_rightMot = 150
+            # self.packet_rightThruster = chr(1) + chr(7) + chr(self.value_rightMot) + chr(255)
+            # self.ser.write(self.packet_rightThruster.encode("latin"))
+        elif e.key() == Qt.Key_W or e.key() == Qt.Key_S:
+            print('w/s rel')
+            # self.value_motor = 150
+            # self.packet_motor = chr(1) + chr(13) + chr(self.value_motor) + chr(255)
+            # self.ser.write(self.packet_motor.encode("latin"))
+        elif e.key() == Qt.Key_Up or e.key() == Qt.Key_Down:
+            # self.value_motor = 150
+            # self.packet_motor_forward = chr(1) + chr(2) + chr(self.value_motor) + chr(255)
+            # self.ser.write(self.packet_motor_forward.encode("latin"))
+            # self.packet_motor_backward = chr(1) + chr(3) + chr(self.value_motor) + chr(255)
+            # self.ser.write(self.packet_motor_backward.encode("latin"))
+            print('up/down rel')
 
 if __name__ == '__main__':
     # Initial checks
