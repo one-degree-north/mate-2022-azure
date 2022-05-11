@@ -253,3 +253,4 @@ if __name__ == '__main__':
     window.active.cam_tab.thread.capture.release()
 
     print('\033[93m\033[1mAzure UI has stopped sucessfully\033[0m')
+    exit()
