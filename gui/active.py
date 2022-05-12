@@ -22,6 +22,9 @@ class ActiveTab(QTabWidget):
         self.setDocumentMode(True)
         self.tabBar().hide()
 
+    # def keyPressEvent(self, e):
+    #     print(e.text())
+
 
 # Defining global variable(s)
 with open('settings.yml', 'r') as f:
