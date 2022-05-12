@@ -24,10 +24,10 @@ class AzureUI(QMainWindow):
         # self.ser = serial.Serial(port, baud_rate)
         # self.ser.close()
         # self.ser.open()
-        
         self.claw_closed = True
         # self.servo_closed = chr(1) + chr(9) + chr(11) + chr(255)
-        # self.ser.write(self.servo_closed.encode("latin"))
+        # self.ser.write(self.packet_servo.encode("latin"))
+
 
         self.setWindowTitle('Azure UI')
         self.setStyleSheet('background: rgb(24, 40, 61)')
@@ -47,24 +47,8 @@ class AzureUI(QMainWindow):
         self.menu.logs.hide()
         self.resize(600, 400)
 
-        self.ui_controls = []
-        self.bot_controls = []
-
-        # self.control_ui_logging = False
-        # self.control_bot_logging = False
-        # self.keys_logging = True
 
     def keyPressEvent(self, e):
-        # if self.control_ui_logging:
-        #     logging.debug(k.text())
-            
-        # elif self.control_bot_logging: 
-        #     logging.debug(k.text())
-
-        
-        # # elif self.keys_logging and not (e.key() in ui_controls or e.key() in bot_controls):
-
-
         if e.key() == Qt.Key_QuoteLeft:
             if self.menu.isVisible():
                 self.menu.hide()
@@ -100,123 +84,256 @@ class AzureUI(QMainWindow):
                 logging.error('Camera has not yet loaded, please wait')
 
 
-        elif e.key() == Qt.Key_A:
-            # self.value_rightMot = 170
-            # self.packet_rightThruster = chr(1) + chr(7) + chr(self.value_rightMot) + chr(255)
-            # self.ser.write(self.packet_rightThruster.encode("latin"))
-
-            if self.active.console_tab.command_line.controls_logging:
-                logging.debug("'a' pressed")
-        elif e.key() == Qt.Key_D:
-            # self.value_rightMot = 130
-            # self.packet_rightThruster = chr(1) + chr(7) + chr(self.value_rightMot) + chr(255)
-            # self.ser.write(self.packet_rightThruster.encode("latin"))
-
-            if self.active.console_tab.command_line.controls_logging:
-                logging.debug("'d' pressed")
         elif e.key() == Qt.Key_W:
-            # self.value_motor = 127
-            # self.packet_up = chr(1) + chr(13) + chr(self.value_motor) + chr(255)
+            # self.value_forward = 170
+            # self.packet_rightThruster = chr(1) + chr(6) + chr(self.value_forward) + chr(255)
+            # self.ser.write(self.packet_rightThruster.encode("latin"))
+            # self.packet_leftThruster = chr(1) + chr(7) + chr(self.value_forward) + chr(255)
+            # self.ser.write(self.packet_leftThruster.encode("latin"))
+
+            if self.active.console_tab.command_line.controls_logging:
+                logging.debug("'w' pressed: move forward - leftThruster forward, rightThruster forward")
+
+
+        elif e.key() == Qt.Key_A:
+            # self.value_rightMot = 160
+            # self.packet_rightForward = chr(1) + chr(6) + chr(self.value_rightMot) + chr(255)
+            # self.ser.write(self.self.packet_rightForward.encode("latin"))
+            # self.value_lefttMot = 140
+            # self.packet_leftBackward = chr(1) + chr(7) + chr(self.value_lefttMot) + chr(255)
+            # self.ser.write(self.packet_leftBackward)
+
+            if self.active.console_tab.command_line.controls_logging:
+                logging.debug("'a' pressed: turn left - leftThruster backward, rightThruster forward")
+
+
+        elif e.key() == Qt.Key_S:
+            # self.value_backward = 130
+            # self.packet_rightThruster = chr(1) + chr(6) + chr(self.value_backward) + chr(255)
+            # self.ser.write(self.packet_rightThruster.encode("latin"))
+            # self.packet_leftThruster = chr(1) + chr(7) + chr(self.value_backward) + chr(255)
+            # self.ser.write(self.packet_leftThruster.encode("latin"))
+
+            if self.active.console_tab.command_line.controls_logging:
+                logging.debug("'s' pressed: move backward - leftThruster forward, rightThruster forward")
+
+        elif e.key() == Qt.Key_D:
+            # self.value_leftMot = 160
+            # self.packet_leftForward = chr(1) + chr(7) + chr(self.value_leftMot) + chr(255)
+            # self.ser.write(self.self.packet_rightForward.encode("latin"))
+            # self.value_rightMot = 140
+            # self.packet_rightBackward = chr(1) + chr(6) + chr(self.value_rightMot) + chr(255)
+            # self.ser.write(self.packet_leftBackward.encode("latin"))
+
+            if self.active.console_tab.command_line.controls_logging:
+                logging.debug("'d' pressed: turn left - leftThruster forward, rightThruster backward")
+
+
+        elif e.key() == Qt.Key_Up:
+            # self.packet_up = chr(1) + chr(13) + chr(127) + chr(255)
             # self.ser.write(self.packet_up.encode("latin"))
 
             if self.active.console_tab.command_line.controls_logging:
-                logging.debug("'w' pressed")
-        elif e.key() == Qt.Key_S:
-            # self.value_motor = 254
-            # self.packet_down = chr(1) + chr(13) + chr(self.value_motor) + chr(255)
-            # self.ser.write(self.packet_down.encode("latin"))
-            
-            if self.active.console_tab.command_line.controls_logging:
-                logging.debug("'s' pressed")
-        elif e.key() == Qt.Key_Up:
-            # self.value_forward = 130
-            # self.packet_forward = chr(1) + chr(2) + chr(self.value_forward) + chr(255)
-            # self.ser.write(self.packet_forward.encode("latin"))
-            # self.value_backward = 170
-            # self.packet_backward = chr(1) + chr(3) + chr(self.value_backward) + chr(255)
-            # self.ser.write(self.packet_backward.encode("latin"))
+                logging.debug("up pressed: move up")
 
-            if self.active.console_tab.command_line.controls_logging:
-                logging.debug("Up arrow pressed")
         elif e.key() == Qt.Key_Down:
-            # self.value_forward = 170
-            # self.packet_forward = chr(1) + chr(2) + chr(self.value_forward) + chr(255)
-            # self.ser.write(self.packet_forward.encode("latin"))
-            # self.value_backward = 130
-            # self.packet_backward = chr(1) + chr(3) + chr(self.value_backward) + chr(255)
-            # self.ser.write(self.packet_backward.encode("latin"))
+            # self.packet_down = chr(1) + chr(13) + chr(254) + chr(255)
+            # self.ser.write(self.packet_down.encode("latin"))
 
             if self.active.console_tab.command_line.controls_logging:
-                logging.debug("Down arrow pressed")
-        elif e.key() == Qt.Key_Escape:
+                logging.debug("up pressed: move down")
+
+        elif e.key() == Qt.Key_Backspace:
             # self.kill_packet = chr(1) + chr(14) + chr(127) + chr(255)
             # self.ser.write(self.kill_packet.encode("latin"))
 
             if self.active.console_tab.command_line.controls_logging:
-                logging.debug("'esc' pressed: KILL")
-        elif e.key() == Qt.Key_X:
-            if self.claw_closed:
-                # claw should open now
-                if self.active.console_tab.command_line.controls_logging:
-                    logging.debug("'X' pressed: CLAW OPEN")
-                # self.value_servo = 12
-                # self.packet_servo = chr(1) + chr(9) + chr(self.value_servo) + chr(255)
-                # self.ser.write(self.packet_servo.encode("latin"))
-                self.claw_closed = False
-            else:
-                if self.active.console_tab.command_line.controls_logging:
-                    logging.debug("'X' pressed: CLAW CLOSED")
+                logging.debug("backspace pressed: kill")
 
+
+        elif e.key() == Qt.Key_X:
+            if self.claw_closed == True:
+                # self.value_servoGrab = 12
+                # self.packet_servoGrab = chr(1) + chr(9) + chr(self.value_servoGrab) + chr(255)
+                # self.ser.write(self.packet_servoGrab.encode("latin"))
+                self.claw_closed = False
+
+                if self.active.console_tab.command_line.controls_logging:
+                    logging.debug("'x' pressed: open claw")
+            else:
                 # self.value_servo = 11
                 # self.packet_servo = chr(1) + chr(9) + chr(self.value_servo) + chr(255)
                 # self.ser.write(self.packet_servo.encode("latin"))
                 self.claw_closed = True
 
-        if self.active.console_tab.command_line.key_logging and e.key() != Qt.Key_Return:
-            logging.debug(f'Key pressed: {ascii(e.text())}')
+                if self.active.console_tab.command_line.controls_logging:
+                    logging.debug("'x' pressed: close claw")
 
-        # if self.active.console_tab.command_line.controls_logging and e.key() != Qt.Key_Return:
-        #     logging.debug(f'Key pressed: {ascii(e.text())}')
 
-    
-    def keyReleaseEvent(self, e):
-        if e.key() == Qt.Key_A or e.key() == Qt.Key_D:
+        elif e.key() == Qt.Key_N:
+            # self.value_servoRotate = 15
+            # self.packet_servoRotate = chr(1) + chr(8) + chr(self.value_servoRotate) + chr(255)
+            # self.ser.write(self.packet_servoRotate.encode("latin"))
+
             if self.active.console_tab.command_line.controls_logging:
-                logging.debug("'a'/'d' released")
-            # self.value_rightMot = 150
-            # self.packet_rightThruster = chr(1) + chr(7) + chr(self.value_rightMot) + chr(255)
-            # self.ser.write(self.packet_rightThruster.encode("latin"))
-        elif e.key() == Qt.Key_W or e.key() == Qt.Key_S:
+                logging.debug("'n' pressed: servoRotate goes left")
+
+
+        elif e.key() == Qt.Key_M:
+            # self.value_servoRotate = 16
+            # self.packet_servoRotate = chr(1) + chr(8) + chr(self.value_servoRotate) + chr(255)
+            # self.ser.write(self.packet_servoRotate)
+
+            if self.active.console_tab.command_line.controls_logging:
+                logging.debug("'m' pressed: servoRotate goes right")
+
+
+
+    def keyReleaseEvent(self, e):
+        if e.key() == Qt.Key_W or e.key() == Qt.Key_S:
+            # self.value_stop = 150
+            # self.packet_leftMot = chr(1) + chr(7) + chr(self.value_stop) + chr(255)
+            # self.ser.write(self.packet_leftMot.encode("latin"))
+            # self.packet_rightMot = chr(1) + chr(6) + chr(self.value_stop) + chr(255)
+            # self.ser.write(self.packet_rightMot.encode("latin"))
+
             if self.active.console_tab.command_line.controls_logging:
                 logging.debug("'w'/'s' released")
-            # self.value_motor = 150
-            # self.packet_motor = chr(1) + chr(13) + chr(self.value_motor) + chr(255)
-            # self.ser.write(self.packet_motor.encode("latin"))
-        elif e.key() == Qt.Key_Up or e.key() == Qt.Key_Down:
-            # self.value_motor = 150
-            # self.packet_motor_forward = chr(1) + chr(2) + chr(self.value_motor) + chr(255)
-            # self.ser.write(self.packet_motor_forward.encode("latin"))
-            # self.packet_motor_backward = chr(1) + chr(3) + chr(self.value_motor) + chr(255)
-            # self.ser.write(self.packet_motor_backward.encode("latin"))
+
+        elif e.key() == Qt.Key_A or e.key() == Qt.Key_D:
+            # self.value_stop = 150
+            # self.packet_leftMot = chr(1) + chr(7) + chr(self.value_stop) + chr(255)
+            # self.ser.write(self.packet_leftMot.encode("latin"))
+            # self.packet_rightMot = chr(1) + chr(6) + chr(self.value_stop) + chr(255)
+            # self.ser.write(self.packet_rightMot.encode("latin"))
+
             if self.active.console_tab.command_line.controls_logging:
-                logging.debug("Up arrow/down arrow released")
+                logging.debug("'a'/'d' released")
+
+        elif e.key() == Qt.Key_Up or e.key() == Qt.Key_Down:
+            # self.value_stop = 150
+            # self.packet_stop = chr(1) + chr(13) + chr(self.value_stop) + chr(255)
+            # self.ser.write(self.packet_stop.encode("latin"))
+
+            if self.active.console_tab.command_line.controls_logging:
+                logging.debug("up/down released")
+
+
+        elif e.key() == Qt.Key_N or e.key() == Qt.Key_M:
+            # self.value_servoRotate_stop = 17
+            # self.packet_servoRotate = chr(1) + chr(8) + chr(self.value_servoRotate_stop) + chr(255)
+            # self.ser.write(self.packet_servoRotate.encode("latin"))
+
+            if self.active.console_tab.command_line.controls_logging:
+                logging.debug("'n'/'m' released: stop servo")
+
+
+
+
+
+# #######
+#         elif e.key() == Qt.Key_A:
+#             # self.value_rightMot = 170
+#             # self.packet_rightThruster = chr(1) + chr(7) + chr(self.value_rightMot) + chr(255)
+#             # self.ser.write(self.packet_rightThruster.encode("latin"))
+
+#             if self.active.console_tab.command_line.controls_logging:
+#                 logging.debug("'a' pressed")
+#         elif e.key() == Qt.Key_D:
+#             # self.value_rightMot = 130
+#             # self.packet_rightThruster = chr(1) + chr(7) + chr(self.value_rightMot) + chr(255)
+#             # self.ser.write(self.packet_rightThruster.encode("latin"))
+
+#             if self.active.console_tab.command_line.controls_logging:
+#                 logging.debug("'d' pressed")
+#         elif e.key() == Qt.Key_W:
+#             # self.value_motor = 127
+#             # self.packet_up = chr(1) + chr(13) + chr(self.value_motor) + chr(255)
+#             # self.ser.write(self.packet_up.encode("latin"))
+
+#             if self.active.console_tab.command_line.controls_logging:
+#                 logging.debug("'w' pressed")
+#         elif e.key() == Qt.Key_S:
+#             # self.value_motor = 254
+#             # self.packet_down = chr(1) + chr(13) + chr(self.value_motor) + chr(255)
+#             # self.ser.write(self.packet_down.encode("latin"))
+            
+#             if self.active.console_tab.command_line.controls_logging:
+#                 logging.debug("'s' pressed")
+#         elif e.key() == Qt.Key_Up:
+#             # self.value_forward = 130
+#             # self.packet_forward = chr(1) + chr(2) + chr(self.value_forward) + chr(255)
+#             # self.ser.write(self.packet_forward.encode("latin"))
+#             # self.value_backward = 170
+#             # self.packet_backward = chr(1) + chr(3) + chr(self.value_backward) + chr(255)
+#             # self.ser.write(self.packet_backward.encode("latin"))
+
+#             if self.active.console_tab.command_line.controls_logging:
+#                 logging.debug("Up arrow pressed")
+#         elif e.key() == Qt.Key_Down:
+#             # self.value_forward = 170
+#             # self.packet_forward = chr(1) + chr(2) + chr(self.value_forward) + chr(255)
+#             # self.ser.write(self.packet_forward.encode("latin"))
+#             # self.value_backward = 130
+#             # self.packet_backward = chr(1) + chr(3) + chr(self.value_backward) + chr(255)
+#             # self.ser.write(self.packet_backward.encode("latin"))
+
+#             if self.active.console_tab.command_line.controls_logging:
+#                 logging.debug("Down arrow pressed")
+#         elif e.key() == Qt.Key_Escape:
+#             # self.kill_packet = chr(1) + chr(14) + chr(127) + chr(255)
+#             # self.ser.write(self.kill_packet.encode("latin"))
+
+#             if self.active.console_tab.command_line.controls_logging:
+#                 logging.debug("'esc' pressed: KILL")
+#         elif e.key() == Qt.Key_X:
+#             if self.claw_closed:
+#                 # claw should open now
+#                 if self.active.console_tab.command_line.controls_logging:
+#                     logging.debug("'X' pressed: CLAW OPEN")
+#                 # self.value_servo = 12
+#                 # self.packet_servo = chr(1) + chr(9) + chr(self.value_servo) + chr(255)
+#                 # self.ser.write(self.packet_servo.encode("latin"))
+#                 self.claw_closed = False
+#             else:
+#                 if self.active.console_tab.command_line.controls_logging:
+#                     logging.debug("'X' pressed: CLAW CLOSED")
+
+#                 # self.value_servo = 11
+#                 # self.packet_servo = chr(1) + chr(9) + chr(self.value_servo) + chr(255)
+#                 # self.ser.write(self.packet_servo.encode("latin"))
+#                 self.claw_closed = True
+
+#         if self.active.console_tab.command_line.key_logging and e.key() != Qt.Key_Return:
+#             logging.debug(f'Key pressed: {ascii(e.text())}')
+
+#         # if self.active.console_tab.command_line.controls_logging and e.key() != Qt.Key_Return:
+#         #     logging.debug(f'Key pressed: {ascii(e.text())}')
+
+    
+#     def keyReleaseEvent(self, e):
+#         if e.key() == Qt.Key_A or e.key() == Qt.Key_D:
+#             if self.active.console_tab.command_line.controls_logging:
+#                 logging.debug("'a'/'d' released")
+#             # self.value_rightMot = 150
+#             # self.packet_rightThruster = chr(1) + chr(7) + chr(self.value_rightMot) + chr(255)
+#             # self.ser.write(self.packet_rightThruster.encode("latin"))
+#         elif e.key() == Qt.Key_W or e.key() == Qt.Key_S:
+#             if self.active.console_tab.command_line.controls_logging:
+#                 logging.debug("'w'/'s' released")
+#             # self.value_motor = 150
+#             # self.packet_motor = chr(1) + chr(13) + chr(self.value_motor) + chr(255)
+#             # self.ser.write(self.packet_motor.encode("latin"))
+#         elif e.key() == Qt.Key_Up or e.key() == Qt.Key_Down:
+#             # self.value_motor = 150
+#             # self.packet_motor_forward = chr(1) + chr(2) + chr(self.value_motor) + chr(255)
+#             # self.ser.write(self.packet_motor_forward.encode("latin"))
+#             # self.packet_motor_backward = chr(1) + chr(3) + chr(self.value_motor) + chr(255)
+#             # self.ser.write(self.packet_motor_backward.encode("latin"))
+#             if self.active.console_tab.command_line.controls_logging:
+#                 logging.debug("Up arrow/down arrow released")
 
 if __name__ == '__main__':
-    # Initial checks
-
-    # with open('settings.yml') as f:
-    #     settings = yaml.safe_load(f)
-
-    #     serial_port = settings['serial-port']
-    #     baud_rate = settings['baud-rate']
-
-    # if not os.path.exists(serial_port):
-    #     print('\033[91m\033[1mInvalid serial port\033[0m')
-    #     exit()
-
-
-    ## Setup    
-
     app = QApplication([])
 
     app.setWindowIcon(QIcon('gui/icon.png'))
