@@ -235,7 +235,10 @@ if __name__ == '__main__':
 
     app.setWindowIcon(QIcon('gui/icon.png'))
 
-    window = AzureUI(port, baud)
+    with open('settings.yml', 'r') as f:
+        settings_file = yaml.safe_load(f)
+
+    window = AzureUI(int(settings_file['camera-port']), int(settings_file['baud-rate']))
     window.show()
  
     logging.info('Starting up Azure UI...')
