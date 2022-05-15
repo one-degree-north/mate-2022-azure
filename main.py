@@ -121,10 +121,10 @@ class AzureUI(QMainWindow):
         elif e.key() == Qt.Key_D:
             self.value_leftMot = 160
             self.packet_leftForward = chr(1) + chr(7) + chr(self.value_leftMot) + chr(255)
-            self.ser.write(self.packet_rightForward.encode("latin"))
+            self.ser.write(self.packet_leftForward.encode("latin"))
             self.value_rightMot = 140
             self.packet_rightBackward = chr(1) + chr(6) + chr(self.value_rightMot) + chr(255)
-            self.ser.write(self.packet_leftBackward.encode("latin"))
+            self.ser.write(self.packet_rightBackward.encode("latin"))
 
             if self.active.console_tab.command_line.controls_logging:
                 logging.debug("'d' pressed: turn right - leftThruster forward, rightThruster backward")
