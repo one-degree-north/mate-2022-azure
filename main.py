@@ -26,8 +26,8 @@ class AzureUI(QMainWindow):
         self.ser.open()
 
         self.claw_closed = True
-        self.servo_closed = chr(1) + chr(9) + chr(11) + chr(255)
-        self.ser.write(self.packet_servo.encode("latin"))
+        # self.servo_closed = chr(1) + chr(9) + chr(11) + chr(255)
+        # self.ser.write(self.packet_servo.encode("latin"))
 
 
         self.setWindowTitle('Azure UI')
