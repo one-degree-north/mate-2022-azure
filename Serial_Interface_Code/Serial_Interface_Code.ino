@@ -9,10 +9,8 @@
 char header = 1
 char footer = 10
   
-Servo mythruster_FR;
-Servo mythruster_BR;
-Servo mythruster_BL;
-Servo mythruster_FL;
+Servo mythruster_VL;
+Servo mythruster_VR;
 Servo mythruster_R;
 Servo mythruster_L;
 Servo myservo_rotate;
@@ -23,17 +21,11 @@ void setup() {
   myservo_rotate.attach(13);
   myservo_grab.attach(14);
   
-  mythruster_FR.attach(7,1000,2000);
-  mythruster_FR.writeMicroseconds(1500);
+  mythruster_VL.attach(9,1000,2000);
+  mythruster_VL.writeMicroseconds(1500);
   
-  mythruster_BR.attach(8,1000,2000);
-  mythruster_BR.writeMicroseconds(1500);
-  
-  mythruster_BL.attach(9,1000,2000);
-  mythruster_BL.writeMicroseconds(1500);
-  
-  mythruster_FL.attach(10,1000,2000);
-  mythruster_FL.writeMicroseconds(1500);
+  mythruster_VR.attach(10,1000,2000);
+  mythruster_VR.writeMicroseconds(1500);
   
   mythruster_R.attach(11,1000,2000);
   mythruster_R.writeMicroseconds(1500);
@@ -46,7 +38,7 @@ void setup() {
 }
 
 void loop() {
-  sensors_event_t orientationData , angVelocityData , linearAccelData, magnetometerData, accelerometerData, gravityData;
+  /*sensors_event_t orientationData , angVelocityData , linearAccelData, magnetometerData, accelerometerData, gravityData;
   bno.getEvent(&orientationData, Adafruit_BNO055::VECTOR_EULER);
   bno.getEvent(&angVelocityData, Adafruit_BNO055::VECTOR_GYROSCOPE);
   bno.getEvent(&linearAccelData, Adafruit_BNO055::VECTOR_LINEARACCEL);
@@ -73,29 +65,29 @@ void loop() {
   Serial.println(mag);
 
   Serial.println("--");
-  delay(BNO055_SAMPLERATE_DELAY_MS);
+  delay(BNO055_SAMPLERATE_DELAY_MS);*/
 
-    if (Serial.available>=4){
+    if (Serial.available()>=4){
       byte packetheader = Serial.read();
-      if (packetheader==header){
-        byte motor = Serial.read();
-        int8_t speed = Serial.read();
-        int motor_speed = (int) (1500 + speed * (500 / 127));
-        if (incomingByte[2] == 2){
-          mythruster_FR.writeMicroseconds(motor_speed);
-        } else if (incomingByte[2] == 3){
-          mythruster_FL.writeMicroseconds(motor_speed);
-        } else if (incomingByte[2] == 4){
-          mythruster_BR.writeMicroseconds(motor_speed);
-        } else if (incomingByte[2] == 5){
-          mythruster_BL.writeMicroseconds(motor_speed);
-        } else if (incomingByte[2] == 6){
+      byte motor = Serial.read();
+      byte speed = Serial.read();
+      byte packetfooter = Serial.read();
+      
+      if (packetheader == 1 and packetfooter == 10){
+        int motor_speed = 10 * speed;
+        if (motor == 2){
+          mythruster_VR.writeMicroseconds(motor_speed);
+        } else if (motor == 3){
+          mythruster_VL.writeMicroseconds(motor_speed);
+        } else if (motor == 5){
           mythruster_R.writeMicroseconds(motor_speed);
-        } else if (incomingByte[2] == 7){
+        } else if (motor == 6){
           mythruster_L.writeMicroseconds(motor_speed);
-        } else if (incomingByte[2] == 8){
+        } else if (motor == 7){
+          motor_speed = map(motor_speed, 100, 200, 0, 180);
           myservo_rotate.write(motor_speed);
-        } else if (incomingByte[2] == 9){
+        } else if (motor == 8){
+          motor_speed = map(motor_speed, 100, 200, 0, 180);
           myservo_grab.write(motor_speed);
         }
       }
@@ -145,6 +137,6 @@ void printEvent(sensors_event_t* event) {
                
 /*void mythruster_setup() {
   mythruster_BL.writeMicroseconds((int (incomingByte[2])/255)*500+1500));
-}
+}*/
   
   
