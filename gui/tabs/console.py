@@ -76,6 +76,22 @@ class CommandLine(QLineEdit):
                 c - capture a screenshot
 
 
+                Bot controls:
+                backspace - kill
+
+                w - move forward - leftThruster forward, rightThruster forward
+                a - turn left - leftThruster backward, rightThruster forward
+                s - move backward - leftThruster forward, rightThruster forward
+                d - turn right - leftThruster forward, rightThruster backward
+
+                up arrow - move up
+                down arrow - move down
+
+                x - toggle claw (open/close)
+                n - servoRotate goes left
+                m - servoRotate goes right
+
+
                 Commands:
                 help - shows this menu
                 return (++) - returns text to logs
@@ -108,8 +124,7 @@ class CommandLine(QLineEdit):
 
         elif self.split_text[0] == 'list':
             files = "\n".join([f for f in os.listdir('captures') if os.path.isfile(os.path.join('captures', f))])
-            logging.info(f"""
-            captures/\n{files}""")
+            logging.info(f"""captures/\n    {files}""")
 
 
         elif self.split_text[0] == 'key':

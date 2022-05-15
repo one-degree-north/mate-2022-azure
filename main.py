@@ -126,7 +126,7 @@ class AzureUI(QMainWindow):
             # self.ser.write(self.packet_leftBackward.encode("latin"))
 
             if self.active.console_tab.command_line.controls_logging:
-                logging.debug("'d' pressed: turn left - leftThruster forward, rightThruster backward")
+                logging.debug("'d' pressed: turn right - leftThruster forward, rightThruster backward")
 
 
         elif e.key() == Qt.Key_Up:
@@ -141,7 +141,7 @@ class AzureUI(QMainWindow):
             # self.ser.write(self.packet_down.encode("latin"))
 
             if self.active.console_tab.command_line.controls_logging:
-                logging.debug("up pressed: move down")
+                logging.debug("down pressed: move down")
 
         elif e.key() == Qt.Key_Backspace:
             # self.kill_packet = chr(1) + chr(14) + chr(127) + chr(255)
