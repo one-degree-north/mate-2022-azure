@@ -238,7 +238,7 @@ if __name__ == '__main__':
     with open('settings.yml', 'r') as f:
         settings_file = yaml.safe_load(f)
 
-    window = AzureUI(int(settings_file['camera-port']), int(settings_file['baud-rate']))
+    window = AzureUI(settings_file['serial-port'], int(settings_file['baud-rate']))
     window.show()
  
     logging.info('Starting up Azure UI...')
