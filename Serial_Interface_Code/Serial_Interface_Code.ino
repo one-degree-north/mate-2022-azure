@@ -89,10 +89,19 @@ void loop() {
         } else if (motor == 8){
           motor_speed = map(motor_speed, 100, 200, 0, 180);
           myservo_grab.write(motor_speed);
+        } else if (motor == 14){
+          motor_speed = 150
+          mythruster_VR.writeMicroseconds(motor_speed);
+          mythruster_VL.writeMicroseconds(motor_speed);
+          mythruster_R.writeMicroseconds(motor_speed);
+          mythruster_L.writeMicroseconds(motor_speed);
+          
+          servo_setting = 90;
+          myservo_grab.write(servo_setting);
+          myservo_rotate.write(servo_setting);
         }
       }
     }
-              
 }
 
 void printEvent(sensors_event_t* event) {
