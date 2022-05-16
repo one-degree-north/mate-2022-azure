@@ -21,16 +21,16 @@ void setup() {
   myservo_rotate.attach(13);
   myservo_grab.attach(14);
   
-  mythruster_VL.attach(9,1000,2000);
+  mythruster_VL.attach(9,1100,1900);
   mythruster_VL.writeMicroseconds(1500);
   
-  mythruster_VR.attach(10,1000,2000);
+  mythruster_VR.attach(10,1100,1900);
   mythruster_VR.writeMicroseconds(1500);
   
-  mythruster_R.attach(11,1000,2000);
+  mythruster_R.attach(11,1100,1900);
   mythruster_R.writeMicroseconds(1500);
   
-  mythruster_L.attach(12,1000,2000);
+  mythruster_L.attach(12,1100,1900);
   mythruster_L.writeMicroseconds(1500);
   
   delay(200);
